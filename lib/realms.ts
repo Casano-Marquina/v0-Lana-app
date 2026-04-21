@@ -1,8 +1,7 @@
 // Realm (Ámbito) Configuration - Personal, Academic, Relational
 
-import { Heart, Zap, BookOpen } from 'lucide-react';
-
 export type RealmType = 'personal' | 'academic' | 'relational';
+export type IconType = 'zap' | 'book-open' | 'heart';
 
 export interface RealmConfig {
   id: RealmType;
@@ -14,7 +13,7 @@ export interface RealmConfig {
     dark: string;
   };
   textColor: string;
-  icon: React.ReactNode;
+  iconType: IconType;
   emoji: string;
   description: string;
 }
@@ -30,7 +29,7 @@ export const REALMS: Record<RealmType, RealmConfig> = {
       dark: '#1E40AF',
     },
     textColor: '#1E3A8A',
-    icon: <Zap className="w-5 h-5" />,
+    iconType: 'zap',
     emoji: '⭐',
     description: 'Tareas personales, salud, tiempo para ti',
   },
@@ -44,7 +43,7 @@ export const REALMS: Record<RealmType, RealmConfig> = {
       dark: '#6D28D9',
     },
     textColor: '#4C1D95',
-    icon: <BookOpen className="w-5 h-5" />,
+    iconType: 'book-open',
     emoji: '🎓',
     description: 'Estudios, trabajo, desarrollo profesional',
   },
@@ -58,7 +57,7 @@ export const REALMS: Record<RealmType, RealmConfig> = {
       dark: '#BE185D',
     },
     textColor: '#831843',
-    icon: <Heart className="w-5 h-5" />,
+    iconType: 'heart',
     emoji: '❤️',
     description: 'Familia, amigos, relaciones importantes',
   },
