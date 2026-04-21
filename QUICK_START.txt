@@ -1,0 +1,206 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    ⭐ MI AGENDA - QUICK START GUIDE ⭐                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🚀 OPCIÓN 1: USAR LA APP AHORA (PWA)                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Abre tu navegador y accede a la URL
+2. Busca el botón "Instalar" o espera el prompt
+3. Haz clic en "Instalar"
+4. ¡Listo! Tienes la app descargada
+
+La app funciona OFFLINE - no necesitas internet después de instalar.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 💻 OPCIÓN 2: DESARROLLAR LOCALMENTE                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+# Instalar dependencias
+pnpm install
+
+# Iniciar servidor de desarrollo
+pnpm dev
+
+# Abre en el navegador
+http://localhost:3000
+
+# El servidor se recargará automáticamente cuando hagas cambios
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔨 OPCIÓN 3: BUILD PARA PRODUCCIÓN                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+# Compilar
+pnpm run build
+
+# Iniciar servidor de producción
+pnpm run start
+
+# La app estará en http://localhost:3000
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📋 MI PRIMERA TAREA EN 5 PASOS                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. 🏠 Abre el Dashboard (página principal)
+2. ➕ Haz clic en el botón + (arriba a la derecha)
+3. ✍️  Escribe tu tarea:
+   - Título: "Aprender Mi Agenda"
+   - Ámbito: "Tu Futuro" (púrpura)
+   - Prioridad: "Alta" (roja)
+   - Fecha: Hoy
+   - Hora: Ahora + 5 min
+   - Recordatorio: Activado
+4. 📤 Haz clic en "Crear Tarea"
+5. 🔔 Espera el recordatorio en 5 minutos
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🎯 LOS 3 ÁMBITOS DE TU VIDA                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Tu Centro (PERSONAL) - Azul ⭐
+├─ Ejercicio y salud
+├─ Descanso y relajación
+├─ Autocuidado
+└─ Diversión y ocio
+
+Tu Futuro (ACADÉMICO/TÉCNICO) - Púrpura 🎓
+├─ Estudios
+├─ Trabajo y carrera
+├─ Proyectos profesionales
+└─ Desarrollo personal
+
+Tu Corazón (RELACIONAL) - Rosa ❤️
+├─ Familia
+├─ Amigos
+├─ Relaciones importantes
+└─ Tiempo en pareja
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🎨 PERSONALIZAR TU AGENDA                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. Haz clic en el icono de paleta 🎨 (en el header)
+2. Elige colores para cada ámbito O sube tus propias imágenes
+3. Las imágenes se comprimen automáticamente
+4. Los cambios se guardan instantáneamente
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔔 NOTIFICACIONES Y RECORDATORIOS                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Ir a Configuración ⚙️ y activar:
+✓ Notificaciones Push (alertas del sistema)
+✓ Sonidos (sonido de alerta)
+✓ Recordatorios Visuales (modal en pantalla)
+
+Opciones de recordatorio:
+- 5 minutos antes
+- 15 minutos antes
+- 30 minutos antes
+- 1 hora antes
+- 1 día antes
+- Personalizado (cualquier hora)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📱 INSTALAR COMO APP EN TU DISPOSITIVO                                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+iOS (Safari):
+1. Abre Safari
+2. Accede a la app
+3. Toca el icono de compartir 
+4. Selecciona "Agregar a pantalla de inicio"
+5. Elige nombre y presiona "Agregar"
+
+Android (Chrome):
+1. Abre Chrome
+2. Accede a la app
+3. Toca el menú (⋮)
+4. Selecciona "Instalar aplicación"
+5. Confirma la instalación
+
+Escritorio (Chrome/Edge):
+1. Abre la app
+2. Busca el icono de instalación en la barra
+3. Haz clic e instala
+4. Se abrirá como ventana de app
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 📚 DOCUMENTACIÓN ADICIONAL                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+📖 README.md - Guía completa
+📖 GETTING_STARTED.md - Tutorial detallado
+📖 ARCHITECTURE.md - Detalles técnicos
+📖 CHANGELOG.md - Historial y roadmap
+📖 PROJECT_SUMMARY.md - Resumen del proyecto
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ⚡ TIPS ÚTILES                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+✓ La app funciona COMPLETAMENTE OFFLINE
+✓ Tus datos se guardan LOCALMENTE en tu dispositivo
+✓ NADIE puede acceder a tus tareas (máxima privacidad)
+✓ Puedes usar en múltiples dispositivos (sin sincronización aún)
+✓ No necesitas crear cuenta ni contraseña
+✓ Las imágenes se comprimen automáticamente
+✓ El almacenamiento es ilimitado dentro de tu dispositivo
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ❓ PREGUNTAS FRECUENTES                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+P: ¿Se pierden mis datos si cierro la app?
+R: No, se guardan localmente en tu dispositivo. Permanecen incluso si la cierras.
+
+P: ¿Funciona sin internet?
+R: Sí, completamente. Diseñada para funcionar offline desde el inicio.
+
+P: ¿Cuántas tareas puedo crear?
+R: Casi ilimitadas (limitado solo por el almacenamiento del dispositivo)
+
+P: ¿Cómo comparto tareas con otros?
+R: Próximamente habrá modo colaborativo. Por ahora, exporta tus datos.
+
+P: ¿Mis datos están seguros?
+R: Sí, se almacenan SOLO en tu dispositivo. Máxima privacidad.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🔧 TROUBLESHOOTING                                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Las tareas no aparecen:
+→ Recarga la página (F5)
+→ Verifica el filtro (Hoy/Todas)
+
+No recibo recordatorios:
+→ Ve a Configuración → Activa "Notificaciones Push"
+→ Autoriza notificaciones en el navegador
+
+La app no funciona offline:
+→ Instálala primero como PWA
+→ Cárgala completamente una vez con internet
+
+El servidor no inicia:
+→ Ejecuta: pnpm install
+→ Ejecuta: pnpm run dev
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 🚀 ¡PRÓXIMOS PASOS!                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+✓ Instala la PWA
+✓ Crea tu primera tarea
+✓ Personaliza los fondos
+✓ Prueba los recordatorios
+✓ Explora las vistas semanal
+✓ Configura tus preferencias
+
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                 ¡BIENVENIDO A MI AGENDA! 🎉                                  ║
+║          Organiza tu vida. Prioriza lo que importa. Vive plenamente.        ║
+╚══════════════════════════════════════════════════════════════════════════════╝
