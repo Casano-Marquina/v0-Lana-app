@@ -5,90 +5,68 @@ import {
   getAllTasks,
   getTasksByRealm,
   Task,
-  updateTask,
-  deleteTask,
-  formatDate,
+  getBackground,
 } from '@/lib/db';
-import { REALMS } from '@/lib/realms';
-import { TaskCard } from '@/components/TaskCard';
+import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
 import { useReminders } from '@/hooks/useReminders';
 import Link from 'next/link';
-import { Plus, Settings, Zap, BookOpen, Heart, Palette, Calendar } from 'lucide-react';
+import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-type FilterTab = 'all' | 'today' | 'personal' | 'academic' | 'relational';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [activeTab, setActiveTab] = useState<FilterTab>('today');
+  const [realmStats, setRealmStats] = useState<Record<RealmType, { pending: number; completed: number; total: number }>>({
+    personal: { pending: 0, completed: 0, total: 0 },
+    academic: { pending: 0, completed: 0, total: 0 },
+    relational: { pending: 0, completed: 0, total: 0 },
+  });
+  const [realmBackgrounds, setRealmBackgrounds] = useState<Record<RealmType, { image?: string; color?: string }>>({
+    personal: {},
+    academic: {},
+    relational: {},
+  });
   const [loading, setLoading] = useState(true);
   const { reminderTask, onDismissReminder, onSnoozeReminder, onCompleteReminder } = useReminders();
 
   useEffect(() => {
-    loadTasks();
+    loadData();
   }, []);
 
-  useEffect(() => {
-    filterTasks();
-  }, [tasks, activeTab]);
-
-  async function loadTasks() {
+  async function loadData() {
     try {
       const allTasks = await getAllTasks();
-      setTasks(allTasks.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      setTasks(allTasks);
+
+      // Calculate stats for each realm
+      const newStats = { ...realmStats };
+      const newBgs = { ...realmBackgrounds };
+
+      for (const realm of Object.values(REALMS)) {
+        const realmTasks = allTasks.filter((t) => t.realm === realm.id);
+        newStats[realm.id as RealmType] = {
+          pending: realmTasks.filter((t) => !t.completed).length,
+          completed: realmTasks.filter((t) => t.completed).length,
+          total: realmTasks.length,
+        };
+
+        // Get background for realm
+        const bg = await getBackground(realm.id as RealmType);
+        newBgs[realm.id as RealmType] = bg || {};
+      }
+
+      setRealmStats(newStats);
+      setRealmBackgrounds(newBgs);
     } catch (error) {
-      console.error('[v0] Error loading tasks:', error);
+      console.error('[v0] Error loading data:', error);
     } finally {
       setLoading(false);
     }
   }
 
-  function filterTasks() {
-    const today = formatDate(new Date());
-    let filtered = tasks;
-
-    if (activeTab === 'today') {
-      filtered = tasks.filter((t) => t.dueDate === today && !t.completed);
-    } else if (activeTab === 'all') {
-      filtered = tasks;
-    } else if (activeTab !== 'all' && activeTab !== 'today') {
-      filtered = tasks.filter((t) => t.realm === activeTab);
-    }
-
-    setFilteredTasks(filtered);
-  }
-
-  async function handleToggleTask(task: Task) {
-    try {
-      const updated = { ...task, completed: !task.completed, updatedAt: new Date().toISOString() };
-      await updateTask(updated);
-      setTasks(tasks.map((t) => (t.id === task.id ? updated : t)));
-    } catch (error) {
-      console.error('[v0] Error toggling task:', error);
-    }
-  }
-
-  async function handleDeleteTask(id: string) {
-    try {
-      await deleteTask(id);
-      setTasks(tasks.filter((t) => t.id !== id));
-    } catch (error) {
-      console.error('[v0] Error deleting task:', error);
-    }
-  }
-
   const completedCount = tasks.filter((t) => t.completed).length;
   const pendingCount = tasks.filter((t) => !t.completed).length;
-
-  const tabs: { id: FilterTab; label: string; icon?: React.ReactNode }[] = [
-    { id: 'today', label: 'Hoy' },
-    { id: 'personal', label: 'Tu Centro', icon: <Zap className="w-4 h-4" /> },
-    { id: 'academic', label: 'Tu Futuro', icon: <BookOpen className="w-4 h-4" /> },
-    { id: 'relational', label: 'Tu Corazón', icon: <Heart className="w-4 h-4" /> },
-    { id: 'all', label: 'Todas' },
-  ];
+  const realmList = Object.values(REALMS) as typeof REALMS[keyof typeof REALMS][];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
@@ -101,7 +79,7 @@ export default function Dashboard() {
 
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Mi Agenda
@@ -141,80 +119,123 @@ export default function Dashboard() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-blue-600">{pendingCount}</div>
-            <div className="text-sm text-gray-600">Pendientes</div>
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-green-600">{completedCount}</div>
-            <div className="text-sm text-gray-600">Completadas</div>
-          </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-purple-600">{tasks.length}</div>
-            <div className="text-sm text-gray-600">Total</div>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-4 px-4">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={cn(
-                'px-4 py-2 rounded-lg font-medium text-sm transition-all whitespace-nowrap flex items-center gap-2',
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm'
-                  : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-              )}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Tasks */}
-        <div className="space-y-3">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        ) : (
+          <>
+            {/* Global Stats */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                <div className="text-3xl font-bold text-blue-600">{pendingCount}</div>
+                <div className="text-sm text-gray-600">Pendientes</div>
+              </div>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                <div className="text-3xl font-bold text-green-600">{completedCount}</div>
+                <div className="text-sm text-gray-600">Completadas</div>
+              </div>
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                <div className="text-3xl font-bold text-purple-600">{tasks.length}</div>
+                <div className="text-sm text-gray-600">Total</div>
+              </div>
             </div>
-          ) : filteredTasks.length === 0 ? (
-            <div className="bg-white rounded-lg p-12 text-center border border-gray-100">
-              <div className="text-4xl mb-4">🎉</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">¡Sin tareas!</h3>
-              <p className="text-gray-600 mb-4">
-                {activeTab === 'today'
-                  ? 'No tienes tareas para hoy. ¡Descansa!'
-                  : activeTab === 'all'
-                    ? 'Crea tu primera tarea para empezar'
-                    : 'No hay tareas en este ámbito'}
-              </p>
-              <Link
-                href="/create"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2 transition-colors"
-              >
-                Crear Tarea
-              </Link>
+
+            {/* Realm Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {realmList.map((realm) => {
+                const stats = realmStats[realm.id as RealmType];
+                const bg = realmBackgrounds[realm.id as RealmType];
+                const backgroundStyle: React.CSSProperties = {
+                  backgroundImage: bg?.image ? `url(${bg.image})` : undefined,
+                  backgroundColor: !bg?.image ? (bg?.color || realm.color.light) : undefined,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                };
+
+                return (
+                  <Link
+                    key={realm.id}
+                    href={`/realm/${realm.id}`}
+                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
+                  >
+                    {/* Background */}
+                    <div
+                      className="absolute inset-0"
+                      style={backgroundStyle}
+                    />
+
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/20 to-black/40" />
+
+                    {/* Content */}
+                    <div className="relative p-6 text-white min-h-64 flex flex-col justify-between">
+                      {/* Header */}
+                      <div>
+                        <div
+                          className="w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+                          style={{ backgroundColor: realm.color.main }}
+                        >
+                          <span className="text-xl">{realm.emoji}</span>
+                        </div>
+                        <h3 className="text-2xl font-bold mb-1">{realm.name}</h3>
+                        <p className="text-sm opacity-90">{realm.subtitle}</p>
+                      </div>
+
+                      {/* Stats */}
+                      <div className="space-y-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm opacity-90">Pendientes</span>
+                          <span className="text-xl font-bold">{stats.pending}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm opacity-90">Completadas</span>
+                          <span className="text-xl font-bold">{stats.completed}</span>
+                        </div>
+
+                        {/* Progress Bar */}
+                        <div className="w-full bg-white/20 rounded-full h-2 mt-4 overflow-hidden">
+                          <div
+                            className="bg-white h-full rounded-full transition-all"
+                            style={{
+                              width: stats.total === 0 ? '0%' : `${(stats.completed / stats.total) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        {/* CTA */}
+                        <div className="flex items-center gap-2 mt-4 pt-2 border-t border-white/20 group-hover:translate-x-1 transition-transform">
+                          <span className="text-sm font-medium">Ver ámbito</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          ) : (
-            filteredTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onToggle={handleToggleTask}
-                onDelete={handleDeleteTask}
-                onEdit={() => {
-                  // TODO: Implement edit navigation
-                }}
-              />
-            ))
-          )}
-        </div>
+
+            {/* Empty State */}
+            {tasks.length === 0 && (
+              <div className="mt-12 bg-white rounded-lg p-12 text-center border border-gray-100">
+                <div className="text-4xl mb-4">🚀</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  ¡Comienza a planificar!
+                </h3>
+                <p className="text-gray-600 mb-6">
+                  Crea tu primera tarea en cualquiera de tus tres ámbitos de vida
+                </p>
+                <Link
+                  href="/create"
+                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2 transition-colors"
+                >
+                  Crear Primera Tarea
+                </Link>
+              </div>
+            )}
+          </>
+        )}
       </main>
     </div>
   );

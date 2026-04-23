@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { createTask, generateId, Task, formatDate, formatTime } from '@/lib/db';
 import { RealmSelector } from '@/components/RealmSelector';
 import { PrioritySelector } from '@/components/PrioritySelector';
@@ -8,11 +8,14 @@ import { ReminderSetup } from '@/components/ReminderSetup';
 import { RealmType } from '@/lib/realms';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function CreateTaskPage() {
+function CreateTaskContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+
+  const initialRealm = (searchParams?.get('realm') as RealmType) || 'personal';
 
   const [formData, setFormData] = useState({
     title: '',
@@ -20,10 +23,14 @@ export default function CreateTaskPage() {
     dueDate: formatDate(new Date()),
     dueTime: formatTime(new Date()),
     priority: 'medium' as const,
-    realm: 'personal' as RealmType,
+    realm: initialRealm,
     reminderEnabled: false,
     reminderTime: '09:00',
   });
+
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, realm: initialRealm }));
+  }, [initialRealm]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -81,6 +88,7 @@ export default function CreateTaskPage() {
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
+
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
           {/* Title */}
           <div>
@@ -177,5 +185,17 @@ export default function CreateTaskPage() {
         </form>
       </main>
     </div>
+  );
+}
+
+export default function CreateTaskPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <CreateTaskContent />
+    </Suspense>
   );
 }
