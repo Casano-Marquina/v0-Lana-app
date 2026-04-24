@@ -32,6 +32,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Skip API calls to routes that don't exist
+  if (event.request.url.includes('/api/auth/') || event.request.url.includes('/api/')) {
+    return;
+  }
+
   if (event.request.method !== 'GET') {
     return;
   }
@@ -44,21 +49,27 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
 
-        return fetch(event.request).then((response) => {
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+        return fetch(event.request)
+          .then((response) => {
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            const responseToCache = response.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+
             return response;
-          }
-
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
+          })
+          .catch(() => {
+            // Return offline page for navigation requests
+            if (event.request.mode === 'navigate') {
+              return caches.match('/offline.html');
+            }
+            // Return cached response if available, otherwise fail gracefully
+            return caches.match(event.request);
           });
-
-          return response;
-        });
-      })
-      .catch(() => {
-        // Return offline page or cached response
       })
   );
 });

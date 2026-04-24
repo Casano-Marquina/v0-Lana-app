@@ -9,6 +9,19 @@ const nextConfig = {
     unoptimized: true,
   },
   turbopack: {},
+  headers: async () => {
+    return [
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withPWA({
@@ -17,4 +30,8 @@ export default withPWA({
   skipWaiting: true,
   reloadOnOnline: true,
   sw: 'service-worker.js',
+  disable: false,
+  fallbacks: {
+    document: '/offline.html',
+  },
 })(nextConfig);
