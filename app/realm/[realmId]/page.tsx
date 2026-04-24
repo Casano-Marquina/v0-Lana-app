@@ -141,8 +141,7 @@ export default function RealmPage() {
 
       {/* Content */}
       <div className={cn(
-        'relative z-10 max-w-4xl mx-auto px-4 py-8',
-        backgroundImage && 'backdrop-blur-0'
+        'relative z-10 max-w-4xl mx-auto px-4 py-8'
       )}>
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
