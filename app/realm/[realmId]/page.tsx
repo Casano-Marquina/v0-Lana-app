@@ -22,8 +22,8 @@ export default function RealmPage() {
   const realmId = params.realmId as string;
   
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
-  const [backgroundColor, setBackgroundColor] = useState<string>('#ffffff');
+  const [backgroundValue, setBackgroundValue] = useState<string>('#ffffff');
+  const [backgroundType, setBackgroundType] = useState<'color' | 'image'>('color');
   const [loading, setLoading] = useState(true);
 
   const realm = REALMS[realmId as RealmType];
@@ -40,14 +40,19 @@ export default function RealmPage() {
         setTasks(realmTasks);
 
         const bgData = await getBackground(realmId as RealmType);
-        if (bgData?.image) {
-          setBackgroundImage(bgData.image);
-        }
-        if (bgData?.color) {
-          setBackgroundColor(bgData.color);
+        if (bgData) {
+          console.log('[v0] Background loaded:', bgData);
+          setBackgroundValue(bgData.value);
+          setBackgroundType(bgData.type);
+        } else {
+          console.log('[v0] No background found for realm:', realmId);
+          setBackgroundValue(realm.color.light);
+          setBackgroundType('color');
         }
       } catch (error) {
         console.error('[v0] Error loading realm data:', error);
+        setBackgroundValue(realm.color.light);
+        setBackgroundType('color');
       } finally {
         setLoading(false);
       }
@@ -71,12 +76,14 @@ export default function RealmPage() {
   const completedTasks = tasks.filter(t => t.completed);
 
   const backgroundStyle: React.CSSProperties = {
-    backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-    backgroundColor: !backgroundImage ? backgroundColor : undefined,
+    backgroundImage: backgroundType === 'image' ? `url(${backgroundValue})` : undefined,
+    backgroundColor: backgroundType === 'color' ? backgroundValue : undefined,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundAttachment: 'fixed',
   };
+
+  const isImageBackground = backgroundType === 'image';
 
   if (loading) {
     return (
@@ -93,14 +100,14 @@ export default function RealmPage() {
   return (
     <div className="min-h-screen" style={backgroundStyle}>
       {/* Overlay oscuro si hay fondo de imagen */}
-      {backgroundImage && (
+      {isImageBackground && (
         <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
       )}
 
       {/* Header */}
       <div className={cn(
         'sticky top-0 z-40',
-        backgroundImage ? 'bg-white/90 backdrop-blur-sm' : 'bg-white'
+        isImageBackground ? 'bg-white/90 backdrop-blur-sm' : 'bg-white'
       )}>
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -141,7 +148,7 @@ export default function RealmPage() {
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className={cn(
             'p-4 rounded-lg backdrop-blur-sm',
-            backgroundImage ? 'bg-white/80' : 'bg-gray-50'
+            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
           )}>
             <div className="text-2xl font-bold" style={{ color: realm.color.main }}>
               {pendingTasks.length}
@@ -150,7 +157,7 @@ export default function RealmPage() {
           </div>
           <div className={cn(
             'p-4 rounded-lg backdrop-blur-sm',
-            backgroundImage ? 'bg-white/80' : 'bg-green-50'
+            isImageBackground ? 'bg-white/80' : 'bg-green-50'
           )}>
             <div className="text-2xl font-bold text-green-600">
               {completedTasks.length}
@@ -159,7 +166,7 @@ export default function RealmPage() {
           </div>
           <div className={cn(
             'p-4 rounded-lg backdrop-blur-sm',
-            backgroundImage ? 'bg-white/80' : 'bg-gray-50'
+            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
           )}>
             <div className="text-2xl font-bold text-gray-600">
               {tasks.length}
@@ -172,7 +179,7 @@ export default function RealmPage() {
         {tasks.length === 0 ? (
           <div className={cn(
             'text-center py-12 rounded-lg',
-            backgroundImage ? 'bg-white/80' : 'bg-gray-50'
+            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
           )}>
             <div className="text-4xl mb-2">🎉</div>
             <h3 className="text-xl font-semibold text-gray-700 mb-2">
@@ -195,7 +202,7 @@ export default function RealmPage() {
               <div>
                 <h3 className={cn(
                   'text-lg font-semibold mb-3 px-2',
-                  backgroundImage ? 'text-white' : 'text-gray-900'
+                  isImageBackground ? 'text-white' : 'text-gray-900'
                 )}>
                   Pendientes ({pendingTasks.length})
                 </h3>
@@ -205,7 +212,7 @@ export default function RealmPage() {
                       key={task.id}
                       className={cn(
                         'rounded-lg overflow-hidden',
-                        backgroundImage && 'backdrop-blur-sm'
+                        isImageBackground && 'backdrop-blur-sm'
                       )}
                     >
                       <TaskCard
@@ -223,7 +230,7 @@ export default function RealmPage() {
               <div className="mt-8">
                 <h3 className={cn(
                   'text-lg font-semibold mb-3 px-2 opacity-60',
-                  backgroundImage ? 'text-white' : 'text-gray-900'
+                  isImageBackground ? 'text-white' : 'text-gray-900'
                 )}>
                   Completadas ({completedTasks.length})
                 </h3>
@@ -233,7 +240,7 @@ export default function RealmPage() {
                       key={task.id}
                       className={cn(
                         'rounded-lg overflow-hidden',
-                        backgroundImage && 'backdrop-blur-sm'
+                        isImageBackground && 'backdrop-blur-sm'
                       )}
                     >
                       <TaskCard
