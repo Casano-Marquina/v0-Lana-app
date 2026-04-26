@@ -35,6 +35,13 @@ export default function SettingsPage() {
     }
   }
 
+  const colorModes = [
+    { id: 'default', label: 'Defecto', desc: 'Azul y rosa clásicos' },
+    { id: 'serenidad', label: 'Serenidad Activa', desc: 'Tonos suaves y equilibrados' },
+    { id: 'naturaleza', label: 'Naturaleza y Calma', desc: 'Verdes y tonos orgánicos' },
+    { id: 'deepfocus', label: 'Deep Focus', desc: 'Elegancia nocturna' },
+  ];
+
   async function handleTogglePref(key: keyof UserPreferences, value: boolean | string) {
     if (key === 'pushNotifications' && value === true) {
       const granted = await requestNotificationPermission();
@@ -224,12 +231,7 @@ export default function SettingsPage() {
         <section className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Paleta de Colores</h2>
           <div className="grid grid-cols-2 gap-3">
-            {[
-              { id: 'default', label: 'Defecto', desc: 'Azul y rosa clásicos' },
-              { id: 'serenidad', label: 'Serenidad Activa', desc: 'Tonos suaves y equilibrados' },
-              { id: 'naturaleza', label: 'Naturaleza y Calma', desc: 'Verdes y tonos orgánicos' },
-              { id: 'deepfocus', label: 'Deep Focus', desc: 'Elegancia nocturna' },
-            ] as const).map((mode) => (
+            {colorModes.map((mode) => (
               <button
                 key={mode.id}
                 onClick={() => handleTogglePref('colorMode', mode.id)}
