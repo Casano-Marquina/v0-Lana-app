@@ -31,6 +31,7 @@ export interface UserPreferences {
   visualNotifications: boolean;
   pushNotifications: boolean;
   theme: 'light' | 'dark';
+  colorMode: 'default' | 'serenidad' | 'naturaleza' | 'deepfocus';
   defaultRealm: 'personal' | 'academic' | 'relational';
 }
 
@@ -286,6 +287,7 @@ export function getDefaultPreferences(): UserPreferences {
     visualNotifications: true,
     pushNotifications: true,
     theme: 'light',
+    colorMode: 'default',
     defaultRealm: 'personal',
   };
 }

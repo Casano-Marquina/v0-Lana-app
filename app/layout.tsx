@@ -75,10 +75,18 @@ export default function RootLayout({
                       
                       getRequest.onsuccess = () => {
                         const prefs = getRequest.result;
-                        if (prefs && prefs.theme === 'dark') {
-                          document.documentElement.classList.add('dark');
-                        } else {
-                          document.documentElement.classList.remove('dark');
+                        if (prefs) {
+                          // Apply theme
+                          if (prefs.theme === 'dark') {
+                            document.documentElement.classList.add('dark');
+                          } else {
+                            document.documentElement.classList.remove('dark');
+                          }
+                          
+                          // Apply color mode
+                          const colorMode = prefs.colorMode || 'default';
+                          document.documentElement.classList.remove('color-default', 'color-serenidad', 'color-naturaleza', 'color-deepfocus');
+                          document.documentElement.classList.add('color-' + colorMode);
                         }
                       };
                     };

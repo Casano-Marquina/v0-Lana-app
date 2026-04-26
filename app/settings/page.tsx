@@ -60,6 +60,12 @@ export default function SettingsPage() {
           document.documentElement.classList.remove('dark');
         }
       }
+      
+      // Apply color mode to document
+      if (key === 'colorMode') {
+        document.documentElement.classList.remove('color-default', 'color-serenidad', 'color-naturaleza', 'color-deepfocus');
+        document.documentElement.classList.add(`color-${value}`);
+      }
     } catch (error) {
       console.error('[v0] Error updating preferences:', error);
     }
@@ -195,7 +201,7 @@ export default function SettingsPage() {
 
         {/* Theme Section */}
         <section className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Tema</h2>
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Tema Claro/Oscuro</h2>
           <div className="flex gap-3">
             {(['light', 'dark'] as const).map((theme) => (
               <button
@@ -209,6 +215,33 @@ export default function SettingsPage() {
                 )}
               >
                 {theme === 'light' ? '☀️' : '🌙'} {theme === 'light' ? 'Claro' : 'Oscuro'}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Color Mode Section */}
+        <section className="bg-white rounded-lg shadow-md p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4">Paleta de Colores</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { id: 'default', label: 'Defecto', desc: 'Azul y rosa clásicos' },
+              { id: 'serenidad', label: 'Serenidad Activa', desc: 'Tonos suaves y equilibrados' },
+              { id: 'naturaleza', label: 'Naturaleza y Calma', desc: 'Verdes y tonos orgánicos' },
+              { id: 'deepfocus', label: 'Deep Focus', desc: 'Elegancia nocturna' },
+            ] as const).map((mode) => (
+              <button
+                key={mode.id}
+                onClick={() => handleTogglePref('colorMode', mode.id)}
+                className={cn(
+                  'p-4 rounded-lg border-2 text-left font-medium transition-all',
+                  prefs.colorMode === mode.id
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                )}
+              >
+                <div className="font-semibold text-sm">{mode.label}</div>
+                <div className="text-xs text-gray-600 mt-1">{mode.desc}</div>
               </button>
             ))}
           </div>

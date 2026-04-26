@@ -115,6 +115,61 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Color Mode: Serenidad Activa */
+.color-serenidad {
+  --bg-general: #F8FAFC;
+  --center-color: #A5B4FC;
+  --academic-color: #93C5FD;
+  --relational-color: #FDA4AF;
+  --action-accent: #6366F1;
+}
+
+.dark.color-serenidad {
+  --bg-general: #0F172A;
+  --center-color: #818CF8;
+  --academic-color: #60A5FA;
+  --relational-color: #F472B6;
+  --action-accent: #818CF8;
+}
+
+/* Color Mode: Naturaleza y Calma */
+.color-naturaleza {
+  --bg-general: #F0FDF4;
+  --center-color: #86EFAC;
+  --academic-color: #FDE047;
+  --relational-color: #F9A8D4;
+  --action-accent: #22C55E;
+  --text-contrast: #166534;
+}
+
+.dark.color-naturaleza {
+  --bg-general: #0F2818;
+  --center-color: #4ADE80;
+  --academic-color: #FBBF24;
+  --relational-color: #EC4899;
+  --action-accent: #86EFAC;
+  --text-contrast: #DCFCE7;
+}
+
+/* Color Mode: Deep Focus / Night Mood */
+.color-deepfocus {
+  --bg-general: #0F172A;
+  --center-color: #C084FC;
+  --academic-color: #38BDF8;
+  --relational-color: #FB7185;
+  --action-accent: #38BDF8;
+  --card-bg: #1E293B;
+}
+
+.dark.color-deepfocus {
+  --bg-general: #0F172A;
+  --center-color: #D8B4FE;
+  --academic-color: #7DD3FC;
+  --relational-color: #FB7185;
+  --action-accent: #38BDF8;
+  --card-bg: #1E293B;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
