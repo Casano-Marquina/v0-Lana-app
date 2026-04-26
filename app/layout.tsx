@@ -64,31 +64,44 @@ export default function RootLayout({
             __html: `
               // Apply saved theme on page load
               (function() {
-                const applyTheme = async () => {
+                const applyTheme = () => {
                   try {
-                    const request = indexedDB.open('AgendaDB');
+                    if (!window.indexedDB) {
+                      return;
+                    }
+                    
+                    const request = window.indexedDB.open('AgendaDB');
                     request.onsuccess = (event) => {
-                      const database = event.target.result;
-                      const tx = database.transaction('preferences', 'readonly');
-                      const store = tx.objectStore('preferences');
-                      const getRequest = store.get('settings');
-                      
-                      getRequest.onsuccess = () => {
-                        const prefs = getRequest.result;
-                        if (prefs) {
-                          // Apply theme
-                          if (prefs.theme === 'dark') {
-                            document.documentElement.classList.add('dark');
-                          } else {
-                            document.documentElement.classList.remove('dark');
+                      try {
+                        const database = event.target.result;
+                        const tx = database.transaction('preferences', 'readonly');
+                        const store = tx.objectStore('preferences');
+                        const getRequest = store.get('settings');
+                        
+                        getRequest.onsuccess = () => {
+                          const prefs = getRequest.result;
+                          if (prefs) {
+                            // Apply theme
+                            if (prefs.theme === 'dark') {
+                              document.documentElement.classList.add('dark');
+                            } else {
+                              document.documentElement.classList.remove('dark');
+                            }
+                            
+                            // Apply color mode
+                            const colorMode = prefs.colorMode || 'default';
+                            ['color-default', 'color-serenidad', 'color-naturaleza', 'color-deepfocus'].forEach(cls => {
+                              document.documentElement.classList.remove(cls);
+                            });
+                            document.documentElement.classList.add('color-' + colorMode);
                           }
-                          
-                          // Apply color mode
-                          const colorMode = prefs.colorMode || 'default';
-                          document.documentElement.classList.remove('color-default', 'color-serenidad', 'color-naturaleza', 'color-deepfocus');
-                          document.documentElement.classList.add('color-' + colorMode);
-                        }
-                      };
+                        };
+                      } catch (err) {
+                        console.log('[v0] Theme apply error:', err);
+                      }
+                    };
+                    request.onerror = () => {
+                      console.log('[v0] IndexedDB open failed');
                     };
                   } catch (e) {
                     console.log('[v0] Theme loading skipped:', e);
