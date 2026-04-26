@@ -55,13 +55,45 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Mi Agenda" />
       </head>
-      <body className="font-sans antialiased bg-white">
+      <body className="font-sans antialiased bg-white dark:bg-gray-950">
         {children}
         <InstallPrompt />
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <script
           dangerouslySetInnerHTML={{
             __html: `
+              // Apply saved theme on page load
+              (function() {
+                const applyTheme = async () => {
+                  try {
+                    const request = indexedDB.open('AgendaDB');
+                    request.onsuccess = (event) => {
+                      const database = event.target.result;
+                      const tx = database.transaction('preferences', 'readonly');
+                      const store = tx.objectStore('preferences');
+                      const getRequest = store.get('settings');
+                      
+                      getRequest.onsuccess = () => {
+                        const prefs = getRequest.result;
+                        if (prefs && prefs.theme === 'dark') {
+                          document.documentElement.classList.add('dark');
+                        } else {
+                          document.documentElement.classList.remove('dark');
+                        }
+                      };
+                    };
+                  } catch (e) {
+                    console.log('[v0] Theme loading skipped:', e);
+                  }
+                };
+                
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', applyTheme);
+                } else {
+                  applyTheme();
+                }
+              })();
+              
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js', {
                   scope: '/',

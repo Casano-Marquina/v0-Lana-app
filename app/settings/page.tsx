@@ -35,8 +35,8 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleTogglePref(key: keyof UserPreferences, value: boolean) {
-    if (key === 'pushNotifications' && value) {
+  async function handleTogglePref(key: keyof UserPreferences, value: boolean | string) {
+    if (key === 'pushNotifications' && value === true) {
       const granted = await requestNotificationPermission();
       if (!granted) {
         alert('Permiso de notificaciones denegado');
@@ -50,6 +50,16 @@ export default function SettingsPage() {
 
     try {
       await updatePreferences(updated);
+      
+      // Apply theme to document
+      if (key === 'theme') {
+        const isDark = value === 'dark';
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
     } catch (error) {
       console.error('[v0] Error updating preferences:', error);
     }
@@ -57,10 +67,35 @@ export default function SettingsPage() {
 
   async function handleExportData() {
     try {
-      // TODO: Implement data export
-      alert('Funcionalidad de exportación próximamente');
+      const { getAllTasks, getPreferences: getPrefs } = await import('@/lib/db');
+      
+      const tasks = await getAllTasks();
+      const preferences = await getPreferences();
+      
+      const exportData = {
+        version: '1.0.0',
+        exportDate: new Date().toISOString(),
+        tasks,
+        preferences,
+      };
+      
+      // Create blob and download
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json',
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `mi-agenda-export-${new Date().getTime()}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      alert('Datos exportados exitosamente');
     } catch (error) {
       console.error('[v0] Error exporting data:', error);
+      alert('Error al exportar datos');
     }
   }
 
@@ -165,7 +200,7 @@ export default function SettingsPage() {
             {(['light', 'dark'] as const).map((theme) => (
               <button
                 key={theme}
-                onClick={() => handleTogglePref('theme', theme === 'dark')}
+                onClick={() => handleTogglePref('theme', theme)}
                 className={cn(
                   'flex-1 p-4 rounded-lg border-2 font-medium transition-all',
                   prefs.theme === theme
