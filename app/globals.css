@@ -115,6 +115,11 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Color Mode: Default */
+.color-default {
+  /* Uses standard theme colors */
+}
+
 /* Color Mode: Serenidad Activa */
 .color-serenidad {
   --bg-general: #F8FAFC;

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { InstallPrompt } from '@/components/InstallPrompt'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -48,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="bg-white">
+    <html lang="es" className="bg-white dark:bg-slate-950">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -56,65 +57,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Mi Agenda" />
       </head>
       <body className="font-sans antialiased bg-white dark:bg-gray-950">
+        <ThemeProvider />
         {children}
         <InstallPrompt />
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Apply saved theme on page load
-              (function() {
-                const applyTheme = () => {
-                  try {
-                    if (!window.indexedDB) {
-                      return;
-                    }
-                    
-                    const request = window.indexedDB.open('AgendaDB');
-                    request.onsuccess = (event) => {
-                      try {
-                        const database = event.target.result;
-                        const tx = database.transaction('preferences', 'readonly');
-                        const store = tx.objectStore('preferences');
-                        const getRequest = store.get('settings');
-                        
-                        getRequest.onsuccess = () => {
-                          const prefs = getRequest.result;
-                          if (prefs) {
-                            // Apply theme
-                            if (prefs.theme === 'dark') {
-                              document.documentElement.classList.add('dark');
-                            } else {
-                              document.documentElement.classList.remove('dark');
-                            }
-                            
-                            // Apply color mode
-                            const colorMode = prefs.colorMode || 'default';
-                            ['color-default', 'color-serenidad', 'color-naturaleza', 'color-deepfocus'].forEach(cls => {
-                              document.documentElement.classList.remove(cls);
-                            });
-                            document.documentElement.classList.add('color-' + colorMode);
-                          }
-                        };
-                      } catch (err) {
-                        console.log('[v0] Theme apply error:', err);
-                      }
-                    };
-                    request.onerror = () => {
-                      console.log('[v0] IndexedDB open failed');
-                    };
-                  } catch (e) {
-                    console.log('[v0] Theme loading skipped:', e);
-                  }
-                };
-                
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', applyTheme);
-                } else {
-                  applyTheme();
-                }
-              })();
-              
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/sw.js', {
                   scope: '/',
