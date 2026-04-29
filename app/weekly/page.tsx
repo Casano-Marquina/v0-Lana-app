@@ -1,22 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { getTasksByDateRange, Task, formatDate } from '@/lib/db';
-import { TaskCard } from '@/components/TaskCard';
 import { REALMS } from '@/lib/realms';
 import Link from 'next/link';
-import { ArrowLeft, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function WeeklyPlannerPage() {
+const HOURS = Array.from({ length: 15 }, (_, i) => i + 7); // 7:00 to 21:00
+
+export default function WeeklyCalendarPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [weekStart, setWeekStart] = useState<Date>(() => {
     const now = new Date();
     const day = now.getDay();
-    const diff = now.getDate() - day;
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Start on Monday
     return new Date(now.setDate(diff));
   });
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState('Usuario');
 
   useEffect(() => {
     loadWeeklyTasks();
@@ -32,7 +34,7 @@ export default function WeeklyPlannerPage() {
       const endStr = formatDate(weekEnd);
 
       const weeklyTasks = await getTasksByDateRange(startStr, endStr);
-      setTasks(weeklyTasks.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()));
+      setTasks(weeklyTasks);
     } catch (error) {
       console.error('[v0] Error loading weekly tasks:', error);
     } finally {
@@ -40,131 +42,213 @@ export default function WeeklyPlannerPage() {
     }
   }
 
-  const weekEnd = new Date(weekStart);
-  weekEnd.setDate(weekEnd.getDate() + 6);
+  const weekDays = useMemo(() => {
+    return Array.from({ length: 7 }, (_, i) => {
+      const date = new Date(weekStart);
+      date.setDate(date.getDate() + i);
+      return date;
+    });
+  }, [weekStart]);
 
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(weekStart);
-    date.setDate(date.getDate() + i);
-    return date;
-  });
+  const dayNames = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado', 'Domingo'];
+  const today = formatDate(new Date());
 
-  const tasksByDay = weekDays.map((day) => {
+  // Get tasks for a specific day and hour
+  const getTasksForSlot = (day: Date, hour: number) => {
     const dayStr = formatDate(day);
-    return tasks.filter((t) => t.dueDate === dayStr);
-  });
+    return tasks.filter((task) => {
+      if (task.dueDate !== dayStr) return false;
+      if (!task.reminderTime) return hour === 9; // Default to 9am if no time
+      const taskHour = parseInt(task.reminderTime.split(':')[0], 10);
+      return taskHour === hour;
+    });
+  };
 
-  const totalHours = tasks.reduce((sum) => sum + 1, 0); // Simplified
-  const completedCount = tasks.filter((t) => t.completed).length;
+  // Get realm color
+  const getRealmColor = (realm: string) => {
+    switch (realm) {
+      case 'personal':
+        return 'bg-blue-100 border-blue-400 text-blue-800';
+      case 'academic':
+        return 'bg-amber-100 border-amber-400 text-amber-800';
+      case 'relational':
+        return 'bg-pink-100 border-pink-400 text-pink-800';
+      default:
+        return 'bg-gray-100 border-gray-400 text-gray-800';
+    }
+  };
+
+  const goToPrevWeek = () => {
+    setWeekStart(new Date(weekStart.getTime() - 7 * 24 * 60 * 60 * 1000));
+  };
+
+  const goToNextWeek = () => {
+    setWeekStart(new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000));
+  };
+
+  const goToToday = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+    setWeekStart(new Date(now.setDate(diff)));
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+      <header className="bg-card border-b border-border px-4 py-3">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-secondary rounded-full transition-colors"
               title="Volver"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-              <Calendar className="w-6 h-6" />
-              Planificación Semanal
-            </h1>
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-medium">
+                {userName.charAt(0).toUpperCase()}{userName.split(' ')[1]?.charAt(0).toUpperCase() || ''}
+              </div>
+              <span className="text-card-foreground font-medium">{userName}</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setWeekStart(new Date(weekStart.getTime() - 7 * 24 * 60 * 60 * 1000))}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Semana anterior"
+              onClick={goToToday}
+              className="px-3 py-1.5 text-sm bg-secondary hover:bg-secondary/80 text-secondary-foreground rounded transition-colors"
             >
-              <ChevronLeft className="w-5 h-5" />
+              Hoy
             </button>
-            <span className="text-sm font-medium text-gray-600 min-w-32 text-center">
-              {formatDate(weekStart)} a {formatDate(weekEnd)}
-            </span>
             <button
-              onClick={() => setWeekStart(new Date(weekStart.getTime() + 7 * 24 * 60 * 60 * 1000))}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Próxima semana"
+              onClick={goToPrevWeek}
+              className="p-1.5 hover:bg-secondary rounded-full transition-colors"
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5 text-muted-foreground" />
             </button>
+            <button
+              onClick={goToNextWeek}
+              className="p-1.5 hover:bg-secondary rounded-full transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <Link
+              href="/create"
+              className="ml-2 p-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full transition-colors"
+            >
+              <Plus className="w-5 h-5" />
+            </Link>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-blue-600">{tasks.length}</div>
-            <div className="text-sm text-gray-600">Tareas esta semana</div>
-          </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-green-600">{completedCount}</div>
-            <div className="text-sm text-gray-600">Completadas</div>
-          </div>
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-            <div className="text-3xl font-bold text-purple-600">{tasks.length - completedCount}</div>
-            <div className="text-sm text-gray-600">Pendientes</div>
-          </div>
-        </div>
-
-        {/* Weekly View */}
+      {/* Calendar Grid */}
+      <div className="flex-1 overflow-auto">
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
-          <div className="space-y-4">
-            {weekDays.map((day, index) => {
-              const dayTasks = tasksByDay[index];
-              const dayNames = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-              const isToday = formatDate(day) === formatDate(new Date());
+          <div className="min-w-[800px]">
+            {/* Days Header */}
+            <div className="grid grid-cols-8 border-b border-border sticky top-0 bg-card z-10">
+              <div className="p-2 text-center border-r border-border">
+                <div className="w-8 h-8 mx-auto"></div>
+              </div>
+              {weekDays.map((day, index) => {
+                const isToday = formatDate(day) === today;
+                const dayNum = day.getDate();
+                const month = day.toLocaleDateString('es', { month: '2-digit' });
 
-              return (
-                <div
-                  key={formatDate(day)}
-                  className={cn(
-                    'rounded-lg border-l-4 p-4 transition-all',
-                    isToday ? 'bg-blue-50 border-l-blue-600 border border-blue-200' : 'bg-white border-l-gray-300 border border-gray-100'
-                  )}
-                >
-                  <div className="mb-3">
-                    <h3 className="font-bold text-gray-900">
-                      {dayNames[day.getDay()]} - {formatDate(day)}
-                      {isToday && <span className="ml-2 text-xs bg-blue-600 text-white px-2 py-1 rounded">Hoy</span>}
-                    </h3>
-                    <p className="text-xs text-gray-500 mt-1">{dayTasks.length} tareas</p>
+                return (
+                  <div
+                    key={index}
+                    className={cn(
+                      'p-2 text-center border-r border-border last:border-r-0',
+                      isToday && 'bg-primary/5'
+                    )}
+                  >
+                    <div className="text-xs text-muted-foreground font-medium">
+                      {dayNames[index]} {dayNum}/{month}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Time Grid */}
+            <div className="relative">
+              {HOURS.map((hour) => (
+                <div key={hour} className="grid grid-cols-8 border-b border-border min-h-[60px]">
+                  {/* Time Label */}
+                  <div className="p-1 text-right pr-2 border-r border-border">
+                    <span className="text-xs text-muted-foreground">
+                      {hour.toString().padStart(2, '0')}:00
+                    </span>
                   </div>
 
-                  {dayTasks.length === 0 ? (
-                    <div className="text-sm text-gray-500 italic">Sin tareas</div>
-                  ) : (
-                    <div className="space-y-2">
-                      {dayTasks.map((task) => (
-                        <TaskCard
-                          key={task.id}
-                          task={task}
-                          onToggle={() => {}}
-                          onDelete={() => {}}
-                          onEdit={() => {}}
-                          isCompact
-                        />
-                      ))}
-                    </div>
-                  )}
+                  {/* Day Columns */}
+                  {weekDays.map((day, dayIndex) => {
+                    const slotTasks = getTasksForSlot(day, hour);
+                    const isToday = formatDate(day) === today;
+
+                    return (
+                      <div
+                        key={dayIndex}
+                        className={cn(
+                          'border-r border-border last:border-r-0 p-0.5 relative',
+                          isToday && 'bg-primary/5'
+                        )}
+                      >
+                        {slotTasks.map((task) => (
+                          <Link
+                            key={task.id}
+                            href={`/edit/${task.id}`}
+                            className={cn(
+                              'block text-xs p-1 rounded border-l-2 mb-0.5 truncate hover:opacity-80 transition-opacity',
+                              getRealmColor(task.realm)
+                            )}
+                            title={task.title}
+                          >
+                            <span className="font-medium">
+                              {task.reminderTime || '09:00'}
+                            </span>
+                            <span className="ml-1 opacity-80">{task.title}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
         )}
-      </main>
+      </div>
+
+      {/* Summary Footer */}
+      <footer className="bg-card border-t border-border p-4">
+        <div className="flex items-center justify-between max-w-4xl mx-auto">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-blue-400"></div>
+              <span className="text-sm text-muted-foreground">Personal</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-amber-400"></div>
+              <span className="text-sm text-muted-foreground">Academico</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-pink-400"></div>
+              <span className="text-sm text-muted-foreground">Relacional</span>
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {tasks.length} tareas esta semana | {tasks.filter(t => t.completed).length} completadas
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
