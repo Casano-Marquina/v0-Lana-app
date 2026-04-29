@@ -36,10 +36,10 @@ export default function SettingsPage() {
   }
 
   const colorModes = [
-    { id: 'default', label: 'Defecto', desc: 'Azul y rosa clásicos' },
-    { id: 'serenidad', label: 'Serenidad Activa', desc: 'Tonos suaves y equilibrados' },
-    { id: 'naturaleza', label: 'Naturaleza y Calma', desc: 'Verdes y tonos orgánicos' },
-    { id: 'deepfocus', label: 'Deep Focus', desc: 'Elegancia nocturna' },
+    { id: 'default', label: 'Defecto', desc: 'Dorado y rojo calido' },
+    { id: 'serenidad', label: 'Serenidad Activa', desc: 'Azul y purpura suaves' },
+    { id: 'naturaleza', label: 'Naturaleza y Calma', desc: 'Verde oliva y melocoton' },
+    { id: 'deepfocus', label: 'Deep Focus', desc: 'Verde y bronce terroso' },
   ];
 
   async function handleTogglePref(key: keyof UserPreferences, value: boolean | string) {
