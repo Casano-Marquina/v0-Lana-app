@@ -6,6 +6,7 @@ import { requestNotificationPermission } from '@/lib/notifications';
 import Link from 'next/link';
 import { ArrowLeft, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Lana } from '@/components/Lana';
 
 export default function SettingsPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null);

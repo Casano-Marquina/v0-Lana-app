@@ -13,6 +13,7 @@ import { useReminders } from '@/hooks/useReminders';
 import Link from 'next/link';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Lana } from '@/components/Lana';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -80,11 +81,14 @@ export default function Dashboard() {
       {/* Header */}
       <header className="sticky top-0 z-50 bg-card shadow-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">
-              Mi Agenda
-            </h1>
-            <p className="text-xs text-muted-foreground">Tus prioridades de vida</p>
+          <div className="flex items-center gap-3">
+            <Lana realm="personal" size="sm" />
+            <div>
+              <h1 className="text-2xl font-bold text-primary">
+                Mi Agenda
+              </h1>
+              <p className="text-xs text-muted-foreground">Tus prioridades de vida</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <Link
@@ -216,11 +220,11 @@ export default function Dashboard() {
               })}
             </div>
 
-            {/* Empty State */}
+            {/* Empty State with Lana */}
             {tasks.length === 0 && (
               <div className="mt-12 bg-card rounded-lg p-12 text-center border border-border">
-                <div className="text-4xl mb-4">🚀</div>
-                <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                <Lana realm="personal" size="lg" showMessage customMessage="Hola! Soy Lana, tu companera de productividad. Crea tu primera tarea y comencemos juntos!" />
+                <h3 className="text-lg font-semibold text-card-foreground mb-2 mt-4">
                   Comienza a planificar
                 </h3>
                 <p className="text-muted-foreground mb-6">
