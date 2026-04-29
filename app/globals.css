@@ -115,64 +115,106 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Color Mode: Default */
+/* Color Mode: Default - uses standard shadcn colors */
 .color-default {
-  /* Uses standard theme colors */
+  /* Default theme variables already set in :root */
 }
 
-/* Color Mode: Serenidad Activa */
-.color-serenidad {
-  --bg-general: #F8FAFC;
-  --center-color: #A5B4FC;
-  --academic-color: #93C5FD;
-  --relational-color: #FDA4AF;
-  --action-accent: #6366F1;
+/* Color Mode: Serenidad Activa - Soft indigo/lavender theme */
+html.color-serenidad {
+  --background: oklch(0.98 0.01 250);
+  --foreground: oklch(0.25 0.02 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.25 0.02 250);
+  --primary: oklch(0.55 0.25 270);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.92 0.05 270);
+  --secondary-foreground: oklch(0.35 0.15 270);
+  --accent: oklch(0.78 0.12 270);
+  --accent-foreground: oklch(0.3 0.1 270);
+  --muted: oklch(0.96 0.01 250);
+  --muted-foreground: oklch(0.55 0.02 250);
 }
 
-.dark.color-serenidad {
-  --bg-general: #0F172A;
-  --center-color: #818CF8;
-  --academic-color: #60A5FA;
-  --relational-color: #F472B6;
-  --action-accent: #818CF8;
+html.dark.color-serenidad {
+  --background: oklch(0.15 0.03 250);
+  --foreground: oklch(0.92 0.01 250);
+  --card: oklch(0.22 0.03 250);
+  --card-foreground: oklch(0.92 0.01 250);
+  --primary: oklch(0.7 0.18 270);
+  --primary-foreground: oklch(0.15 0.03 250);
+  --secondary: oklch(0.3 0.1 270);
+  --secondary-foreground: oklch(0.85 0.08 270);
+  --accent: oklch(0.55 0.25 270);
+  --accent-foreground: oklch(0.92 0.05 270);
+  --muted: oklch(0.22 0.03 250);
+  --muted-foreground: oklch(0.68 0.02 250);
 }
 
-/* Color Mode: Naturaleza y Calma */
-.color-naturaleza {
-  --bg-general: #F0FDF4;
-  --center-color: #86EFAC;
-  --academic-color: #FDE047;
-  --relational-color: #F9A8D4;
-  --action-accent: #22C55E;
-  --text-contrast: #166534;
+/* Color Mode: Naturaleza y Calma - Green organic theme */
+html.color-naturaleza {
+  --background: oklch(0.98 0.03 145);
+  --foreground: oklch(0.28 0.08 145);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.28 0.08 145);
+  --primary: oklch(0.7 0.2 145);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.93 0.08 145);
+  --secondary-foreground: oklch(0.38 0.1 145);
+  --accent: oklch(0.85 0.15 145);
+  --accent-foreground: oklch(0.28 0.08 145);
+  --muted: oklch(0.96 0.02 145);
+  --muted-foreground: oklch(0.48 0.08 165);
 }
 
-.dark.color-naturaleza {
-  --bg-general: #0F2818;
-  --center-color: #4ADE80;
-  --academic-color: #FBBF24;
-  --relational-color: #EC4899;
-  --action-accent: #86EFAC;
-  --text-contrast: #DCFCE7;
+html.dark.color-naturaleza {
+  --background: oklch(0.18 0.05 145);
+  --foreground: oklch(0.93 0.08 145);
+  --card: oklch(0.28 0.08 145);
+  --card-foreground: oklch(0.93 0.08 145);
+  --primary: oklch(0.78 0.18 145);
+  --primary-foreground: oklch(0.18 0.05 145);
+  --secondary: oklch(0.38 0.1 145);
+  --secondary-foreground: oklch(0.88 0.12 145);
+  --accent: oklch(0.7 0.2 145);
+  --accent-foreground: oklch(0.96 0.02 145);
+  --muted: oklch(0.28 0.08 145);
+  --muted-foreground: oklch(0.85 0.15 145);
 }
 
-/* Color Mode: Deep Focus / Night Mood */
-.color-deepfocus {
-  --bg-general: #0F172A;
-  --center-color: #C084FC;
-  --academic-color: #38BDF8;
-  --relational-color: #FB7185;
-  --action-accent: #38BDF8;
-  --card-bg: #1E293B;
+/* Color Mode: Deep Focus - Dark elegant purple/cyan theme */
+html.color-deepfocus {
+  --background: oklch(0.15 0.03 250);
+  --foreground: oklch(0.92 0.01 250);
+  --card: oklch(0.22 0.03 250);
+  --card-foreground: oklch(0.92 0.01 250);
+  --primary: oklch(0.75 0.15 210);
+  --primary-foreground: oklch(0.2 0.08 210);
+  --secondary: oklch(0.35 0.02 250);
+  --secondary-foreground: oklch(0.85 0.01 250);
+  --accent: oklch(0.72 0.18 300);
+  --accent-foreground: oklch(1 0 0);
+  --muted: oklch(0.22 0.03 250);
+  --muted-foreground: oklch(0.68 0.02 250);
+  --border: oklch(0.35 0.02 250);
+  --input: oklch(0.35 0.02 250);
 }
 
-.dark.color-deepfocus {
-  --bg-general: #0F172A;
-  --center-color: #D8B4FE;
-  --academic-color: #7DD3FC;
-  --relational-color: #FB7185;
-  --action-accent: #38BDF8;
-  --card-bg: #1E293B;
+html.dark.color-deepfocus {
+  --background: oklch(0.1 0.02 250);
+  --foreground: oklch(0.95 0.01 250);
+  --card: oklch(0.15 0.03 250);
+  --card-foreground: oklch(0.95 0.01 250);
+  --primary: oklch(0.8 0.12 210);
+  --primary-foreground: oklch(0.2 0.08 210);
+  --secondary: oklch(0.22 0.03 250);
+  --secondary-foreground: oklch(0.92 0.01 250);
+  --accent: oklch(0.8 0.15 300);
+  --accent-foreground: oklch(0.35 0.15 300);
+  --muted: oklch(0.22 0.03 250);
+  --muted-foreground: oklch(0.85 0.01 250);
+  --border: oklch(0.35 0.02 250);
+  --input: oklch(0.35 0.02 250);
 }
 
 @layer base {

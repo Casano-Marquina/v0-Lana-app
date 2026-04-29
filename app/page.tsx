@@ -69,7 +69,7 @@ export default function Dashboard() {
   const realmList = Object.values(REALMS) as typeof REALMS[keyof typeof REALMS][];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background">
       <ReminderModal
         task={reminderTask}
         onDismiss={onDismissReminder}
@@ -78,39 +78,39 @@ export default function Dashboard() {
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+      <header className="sticky top-0 z-50 bg-card shadow-sm border-b border-border">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-primary">
               Mi Agenda
             </h1>
-            <p className="text-xs text-gray-500">Tus prioridades de vida</p>
+            <p className="text-xs text-muted-foreground">Tus prioridades de vida</p>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/weekly"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Ver semana"
             >
-              <Calendar className="w-5 h-5 text-green-600" />
+              <Calendar className="w-5 h-5 text-accent" />
             </Link>
             <Link
               href="/backgrounds"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Personalizar fondos"
             >
-              <Palette className="w-5 h-5 text-purple-600" />
+              <Palette className="w-5 h-5 text-accent" />
             </Link>
             <Link
               href="/settings"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              title="Configuración"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Configuracion"
             >
-              <Settings className="w-5 h-5 text-gray-600" />
+              <Settings className="w-5 h-5 text-muted-foreground" />
             </Link>
             <Link
               href="/create"
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
               title="Nueva tarea"
             >
               <Plus className="w-5 h-5" />
@@ -122,23 +122,23 @@ export default function Dashboard() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
         ) : (
           <>
             {/* Global Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                <div className="text-3xl font-bold text-blue-600">{pendingCount}</div>
-                <div className="text-sm text-gray-600">Pendientes</div>
+              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                <div className="text-3xl font-bold text-primary">{pendingCount}</div>
+                <div className="text-sm text-muted-foreground">Pendientes</div>
               </div>
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                <div className="text-3xl font-bold text-green-600">{completedCount}</div>
-                <div className="text-sm text-gray-600">Completadas</div>
+              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                <div className="text-3xl font-bold text-accent">{completedCount}</div>
+                <div className="text-sm text-muted-foreground">Completadas</div>
               </div>
-              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                <div className="text-3xl font-bold text-purple-600">{tasks.length}</div>
-                <div className="text-sm text-gray-600">Total</div>
+              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
+                <div className="text-3xl font-bold text-secondary-foreground">{tasks.length}</div>
+                <div className="text-sm text-muted-foreground">Total</div>
               </div>
             </div>
 
@@ -218,17 +218,17 @@ export default function Dashboard() {
 
             {/* Empty State */}
             {tasks.length === 0 && (
-              <div className="mt-12 bg-white rounded-lg p-12 text-center border border-gray-100">
+              <div className="mt-12 bg-card rounded-lg p-12 text-center border border-border">
                 <div className="text-4xl mb-4">🚀</div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  ¡Comienza a planificar!
+                <h3 className="text-lg font-semibold text-card-foreground mb-2">
+                  Comienza a planificar
                 </h3>
-                <p className="text-gray-600 mb-6">
-                  Crea tu primera tarea en cualquiera de tus tres ámbitos de vida
+                <p className="text-muted-foreground mb-6">
+                  Crea tu primera tarea en cualquiera de tus tres ambitos de vida
                 </p>
                 <Link
                   href="/create"
-                  className="inline-block bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2 transition-colors"
+                  className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 transition-colors"
                 >
                   Crear Primera Tarea
                 </Link>

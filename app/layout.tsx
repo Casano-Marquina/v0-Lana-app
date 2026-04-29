@@ -49,14 +49,14 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="es" className="bg-white dark:bg-slate-950">
+    <html lang="es" className="color-default">
       <head>
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Mi Agenda" />
       </head>
-      <body className="font-sans antialiased bg-white dark:bg-gray-950">
+      <body className="font-sans antialiased bg-background text-foreground">
         <ThemeProvider />
         {children}
         <InstallPrompt />
