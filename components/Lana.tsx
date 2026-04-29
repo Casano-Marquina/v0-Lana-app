@@ -74,8 +74,8 @@ export function Lana({
   
   const sizeClasses = {
     sm: 'w-12 h-12',
-    md: 'w-20 h-20',
-    lg: 'w-32 h-32',
+    md: 'w-24 h-24',
+    lg: 'w-40 h-40',
   };
 
   useEffect(() => {
@@ -89,21 +89,21 @@ export function Lana({
   }, [realm, showMessage, customMessage]);
 
   return (
-    <div className={`flex flex-col items-center gap-2 ${className}`}>
-      {/* Lana SVG */}
-      <div className={`relative ${sizeClasses[size]}`}>
-        <svg viewBox="0 0 100 100" className="w-full h-full">
-          {/* Cuerpo de lana (oveja) */}
-          <ellipse cx="50" cy="65" rx="30" ry="25" fill="#F5F5DC" />
-          
-          {/* Textura de lana */}
-          <circle cx="35" cy="55" r="8" fill="#FFFEF0" />
-          <circle cx="50" cy="50" r="9" fill="#FFFEF0" />
-          <circle cx="65" cy="55" r="8" fill="#FFFEF0" />
-          <circle cx="30" cy="68" r="7" fill="#FFFEF0" />
-          <circle cx="70" cy="68" r="7" fill="#FFFEF0" />
-          <circle cx="45" cy="75" r="8" fill="#FFFEF0" />
-          <circle cx="55" cy="75" r="8" fill="#FFFEF0" />
+    <div className={`flex flex-col items-center gap-3 transition-all duration-500 ${className}`}>
+      {/* Lana SVG con hover y animaciones */}
+      <div className={`relative ${sizeClasses[size]} hover:scale-105 transition-transform duration-300`}>
+        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
+          {/* Cuerpo con animacion de "respiracion" suave */}
+          <g className="animate-[pulse_4s_infinite_ease-in-out]">
+            <ellipse cx="50" cy="65" rx="30" ry="25" fill="#F5F5DC" />
+            <circle cx="35" cy="55" r="8" fill="#FFFEF0" />
+            <circle cx="50" cy="50" r="9" fill="#FFFEF0" />
+            <circle cx="65" cy="55" r="8" fill="#FFFEF0" />
+            <circle cx="30" cy="68" r="7" fill="#FFFEF0" />
+            <circle cx="70" cy="68" r="7" fill="#FFFEF0" />
+            <circle cx="45" cy="75" r="8" fill="#FFFEF0" />
+            <circle cx="55" cy="75" r="8" fill="#FFFEF0" />
+          </g>
           
           {/* Cabeza */}
           <ellipse cx="50" cy="35" rx="18" ry="16" fill="#F5F5DC" />
@@ -131,13 +131,16 @@ export function Lana({
           <circle cx="38" cy="38" r="3" fill="#FFB6C1" opacity="0.5" />
           <circle cx="62" cy="38" r="3" fill="#FFB6C1" opacity="0.5" />
           
-          {/* Gorrita */}
-          <path 
-            d="M 32 28 Q 35 15 50 12 Q 65 15 68 28 L 32 28 Z" 
-            fill={config.hatColor} 
-          />
-          <ellipse cx="50" cy="28" rx="20" ry="4" fill={config.hatColor} />
-          <circle cx="50" cy="10" r="4" fill={config.hatColor} />
+          {/* Gorrita con transiciones de color suaves */}
+          <g className="transition-colors duration-700 ease-in-out">
+            <path 
+              d="M 32 28 Q 35 15 50 12 Q 65 15 68 28 L 32 28 Z" 
+              fill={config.hatColor} 
+              className="transition-all duration-700"
+            />
+            <ellipse cx="50" cy="28" rx="20" ry="4" fill={config.hatColor} className="transition-all duration-700" />
+            <circle cx="50" cy="10" r="4" fill={config.hatColor} className="transition-all duration-700" />
+          </g>
           
           {/* Patas */}
           <rect x="38" y="85" width="6" height="10" rx="3" fill="#8B7355" />
@@ -145,11 +148,15 @@ export function Lana({
         </svg>
       </div>
       
-      {/* Mensaje */}
+      {/* Mensaje con estilo mejorado */}
       {(showMessage || customMessage) && message && (
-        <div className="bg-card border border-border rounded-xl px-4 py-2 max-w-xs text-center shadow-sm">
-          <p className="text-sm text-card-foreground">{message}</p>
-          <p className="text-xs text-muted-foreground mt-1">- Lana</p>
+        <div className="animate-in fade-in slide-in-from-top-2 duration-500 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-border/50 rounded-2xl px-5 py-3 max-w-xs text-center shadow-xl shadow-black/5">
+          <p className="text-sm font-medium text-slate-700 dark:text-slate-200 leading-relaxed italic">&ldquo;{message}&rdquo;</p>
+          <div className="flex items-center justify-center gap-1 mt-2">
+            <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+            <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Lana - {config.name}</p>
+            <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+          </div>
         </div>
       )}
     </div>
@@ -160,11 +167,15 @@ export function LanaCompletionToast({ realm = 'personal' }: { realm?: Realm }) {
   const message = completionMessages[Math.floor(Math.random() * completionMessages.length)];
   
   return (
-    <div className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3 shadow-lg">
+    <div className="flex items-center gap-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-border/50 rounded-2xl px-4 py-3 shadow-xl shadow-black/5">
       <Lana realm={realm} size="sm" />
       <div>
-        <p className="text-sm font-medium text-card-foreground">{message}</p>
-        <p className="text-xs text-muted-foreground">- Lana</p>
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-200 italic">&ldquo;{message}&rdquo;</p>
+        <div className="flex items-center gap-1 mt-1">
+          <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+          <p className="text-[10px] uppercase tracking-wider font-bold text-slate-400 dark:text-slate-500">Lana</p>
+          <div className="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600" />
+        </div>
       </div>
     </div>
   );
