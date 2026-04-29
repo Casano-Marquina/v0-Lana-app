@@ -15,6 +15,7 @@ import { TaskCard } from '@/components/TaskCard';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Lana } from '@/components/Lana';
 
 export default function RealmPage() {
   const params = useParams();
@@ -107,22 +108,23 @@ export default function RealmPage() {
       {/* Header */}
       <div className={cn(
         'sticky top-0 z-40',
-        isImageBackground ? 'bg-white/90 backdrop-blur-sm' : 'bg-white'
+        isImageBackground ? 'bg-card/90 backdrop-blur-sm' : 'bg-card'
       )}>
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Volver"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
+              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </Link>
+            <Lana realm={realmId as RealmType} size="sm" />
             <div>
               <h1 className="text-2xl font-bold" style={{ color: realm.color.main }}>
                 {realm.name}
               </h1>
-              <p className="text-sm text-gray-600">{realm.description}</p>
+              <p className="text-sm text-muted-foreground">{realm.description}</p>
             </div>
           </div>
 

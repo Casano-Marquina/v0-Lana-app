@@ -6,6 +6,7 @@ import { BackgroundPicker } from '@/components/BackgroundPicker';
 import { RealmType } from '@/lib/realms';
 import Link from 'next/link';
 import { ArrowLeft, Palette } from 'lucide-react';
+import { Lana } from '@/components/Lana';
 
 export default function BackgroundsPage() {
   const [backgrounds, setBackgrounds] = useState<Record<string, Background>>({});
@@ -56,8 +57,8 @@ export default function BackgroundsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -65,27 +66,31 @@ export default function BackgroundsPage() {
   const realms: (RealmType | 'global')[] = ['personal', 'academic', 'relational', 'global'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link
             href="/"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary rounded-lg transition-colors"
             title="Volver"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <Palette className="w-6 h-6 text-purple-600" />
+          <Lana realm="personal" size="sm" />
+          <h1 className="text-2xl font-bold text-card-foreground flex items-center gap-2">
+            <Palette className="w-6 h-6 text-accent" />
             Personalizar Fondos
           </h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+        <div className="bg-card rounded-lg p-4 border border-border mb-6">
+          <Lana realm="personal" size="md" showMessage customMessage="Ya me cambie la gorrita para combinar con tu nueva paleta de colores!" />
+        </div>
         {realms.map((realm) => (
-          <section key={realm} className="bg-white rounded-lg shadow-md p-6">
+          <section key={realm} className="bg-card rounded-lg shadow-md p-6 border border-border">
             <BackgroundPicker
               realm={realm}
               currentBackground={backgrounds[realm]}

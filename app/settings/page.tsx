@@ -133,6 +133,7 @@ export default function SettingsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
+          <Lana realm="personal" size="sm" />
           <h1 className="text-2xl font-bold text-card-foreground">Configuracion</h1>
         </div>
       </header>
@@ -264,8 +265,8 @@ export default function SettingsPage() {
 
         {/* App Info */}
         <section className="bg-card rounded-lg shadow-md p-6 text-center border border-border">
-          <div className="text-primary text-4xl mb-3">Mi Agenda</div>
-          <h3 className="text-lg font-bold text-card-foreground mb-1">Version 1.0.0</h3>
+          <Lana realm="personal" size="lg" showMessage customMessage="Me encanta ayudarte a organizar tu vida. Cualquier duda, aqui estoy!" />
+          <h3 className="text-lg font-bold text-card-foreground mb-1 mt-4">Mi Agenda v1.0.0</h3>
           <p className="text-xs text-muted-foreground">
             Una agenda inteligente organizada por ambitos de vida: Personal, Academico y Relacional
           </p>

@@ -6,6 +6,7 @@ import { REALMS } from '@/lib/realms';
 import Link from 'next/link';
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Lana } from '@/components/Lana';
 
 const HOURS = Array.from({ length: 15 }, (_, i) => i + 7); // 7:00 to 21:00
 
@@ -107,10 +108,8 @@ export default function WeeklyCalendarPage() {
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </Link>
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-sm font-medium">
-                {userName.charAt(0).toUpperCase()}{userName.split(' ')[1]?.charAt(0).toUpperCase() || ''}
-              </div>
-              <span className="text-card-foreground font-medium">{userName}</span>
+              <Lana realm="academic" size="sm" />
+              <span className="text-card-foreground font-medium">Calendario Semanal</span>
             </div>
           </div>
 

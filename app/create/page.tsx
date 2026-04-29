@@ -9,6 +9,7 @@ import { RealmType } from '@/lib/realms';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Lana } from '@/components/Lana';
 
 function CreateTaskContent() {
   const router = useRouter();
@@ -72,35 +73,36 @@ function CreateTaskContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
           <Link
             href="/"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-secondary rounded-lg transition-colors"
             title="Volver"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Nueva Tarea</h1>
+          <Lana realm={formData.realm} size="sm" />
+          <h1 className="text-2xl font-bold text-card-foreground">Nueva Tarea</h1>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-8">
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow-md p-6 space-y-6 border border-border">
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">
-              Título *
+            <label htmlFor="title" className="block text-sm font-semibold text-card-foreground mb-2">
+              Titulo *
             </label>
             <input
               type="text"
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="¿Qué necesitas hacer?"
+              placeholder="Que necesitas hacer?"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={loading}
             />
@@ -177,7 +179,7 @@ function CreateTaskContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+            className="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
           >
             <Plus className="w-5 h-5" />
             {loading ? 'Creando...' : 'Crear Tarea'}
@@ -191,8 +193,8 @@ function CreateTaskContent() {
 export default function CreateTaskPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-pink-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     }>
       <CreateTaskContent />

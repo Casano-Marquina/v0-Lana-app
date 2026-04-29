@@ -238,6 +238,17 @@ export default function Dashboard() {
                 </Link>
               </div>
             )}
+
+            {/* Motivational Footer with Lana */}
+            {tasks.length > 0 && (
+              <div className="mt-8 bg-card rounded-lg p-6 border border-border">
+                <Lana 
+                  realm={pendingCount > completedCount ? 'academic' : pendingCount === 0 ? 'relational' : 'personal'} 
+                  size="md" 
+                  showMessage 
+                />
+              </div>
+            )}
           </>
         )}
       </main>
