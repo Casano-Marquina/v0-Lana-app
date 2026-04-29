@@ -12,6 +12,7 @@ import {
 } from '@/lib/db';
 import { REALMS, RealmType } from '@/lib/realms';
 import { TaskCard } from '@/components/TaskCard';
+import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
