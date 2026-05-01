@@ -3,6 +3,20 @@
 Una aplicación web progresiva (PWA) moderna, intuitiva y descargable para organizar tu vida en tres ámbitos fundamentales: Personal, Académico/Técnico y Relacional.
 
 ## Características
+#### 🐑 Lana OS - Agenda Inteligente de Bienestar
+
+Lana OS es una aplicación de gestión de tiempo y bienestar pensada para mantener un equilibrio real entre tu vida personal, académica y profesional.
+
+## 🛠 Características Técnicas
+* **Desarrollo:** Creada con React, Tailwind v4 y diseño modular.
+* **Componentes Inteligentes:** Sistema dinámico "Lana" que cambia su interfaz y tono para no sobrecargar de trabajo al usuario.
+* **Semáforo Emocional:** Adapta tu lista de prioridades basándose en tu nivel de energía diario para prevenir el burnout.
+
+## 💡 Motivación
+Nació de la necesidad de organizar el caos y el tiempo, transformando la frustración en código eficiente y centrado en la salud mental.
+
+---
+Creado con cariño por Angie para su portafolio SENATI 2026.
 
 ### 🎯 Sistema de Prioridades por Ámbitos
 - **Tu Centro (Personal)**: Tareas personales, salud y bienestar
@@ -174,4 +188,4 @@ MIT
 
 ---
 
-**¡Bienvenido a Mi Agenda! Organiza tu vida, prioriza lo que importa, vive plenamente.**
+**¡Bienvenido a Lana app! Organiza tu vida, prioriza lo que importa, vive plenamente.**
