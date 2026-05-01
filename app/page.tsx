@@ -6,9 +6,12 @@ import {
   getTasksByRealm,
   Task,
   getBackground,
+  updateTask,
+  deleteTask,
 } from '@/lib/db';
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
+import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 import { useReminders } from '@/hooks/useReminders';
 import Link from 'next/link';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';

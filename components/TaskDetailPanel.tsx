@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Task, updateTask, deleteTask, formatDate } from '@/lib/db';
+import { Task, updateTask, formatDate } from '@/lib/db';
 import { REALMS, RealmType } from '@/lib/realms';
 import { cn } from '@/lib/utils';
 import { X, Check, Trash2, Clock, Bell, Calendar, Edit2, Save } from 'lucide-react';
@@ -12,9 +12,10 @@ interface TaskDetailPanelProps {
   onClose: () => void;
   onUpdate: (task: Task) => void;
   onDelete: (id: string) => void;
+  onToggle: (task: Task) => void;
 }
 
-export function TaskDetailPanel({ task, onClose, onUpdate, onDelete }: TaskDetailPanelProps) {
+export function TaskDetailPanel({ task, onClose, onUpdate, onDelete, onToggle }: TaskDetailPanelProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTask, setEditedTask] = useState<Task | null>(null);
 
@@ -39,15 +40,12 @@ export function TaskDetailPanel({ task, onClose, onUpdate, onDelete }: TaskDetai
     }
   };
 
-  const handleToggleComplete = async () => {
-    const updated = { ...task, completed: !task.completed };
-    await updateTask(updated);
-    onUpdate(updated);
+  const handleToggleComplete = () => {
+    onToggle(task);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (confirm('Estas seguro de eliminar esta tarea?')) {
-      await deleteTask(task.id);
       onDelete(task.id);
       onClose();
     }
