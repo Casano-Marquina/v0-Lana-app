@@ -3,15 +3,11 @@
 import { useEffect, useState } from 'react';
 import {
   getAllTasks,
-  getTasksByRealm,
   Task,
   getBackground,
-  updateTask,
-  deleteTask,
 } from '@/lib/db';
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
-import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 import { useReminders } from '@/hooks/useReminders';
 import Link from 'next/link';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
@@ -255,15 +251,6 @@ export default function Dashboard() {
           </>
         )}
       </main>
-
-      {/* Task Detail Panel */}
-      <TaskDetailPanel
-        task={selectedTask}
-        onClose={() => setSelectedTask(null)}
-        onUpdate={handleUpdateTask}
-        onDelete={handleDeleteTask}
-        onToggle={handleToggleTask}
-      />
     </div>
   );
 }
