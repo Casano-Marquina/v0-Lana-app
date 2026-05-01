@@ -252,6 +252,15 @@ export default function Dashboard() {
           </>
         )}
       </main>
+
+      {/* Task Detail Panel */}
+      <TaskDetailPanel
+        task={selectedTask}
+        onClose={() => setSelectedTask(null)}
+        onUpdate={handleUpdateTask}
+        onDelete={handleDeleteTask}
+        onToggle={handleToggleTask}
+      />
     </div>
   );
 }
