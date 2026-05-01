@@ -13,6 +13,8 @@ import {
 import { REALMS, RealmType } from '@/lib/realms';
 import { TaskCard } from '@/components/TaskCard';
 import { TaskDetailPanel } from '@/components/TaskDetailPanel';
+import { EnergyBadge, HeavyTaskWarning } from '@/components/EnergyCheckIn';
+import { useEnergyLevel, filterTasksByEnergy, isHeavyTask, energyMessages } from '@/hooks/useEnergyLevel';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -27,6 +29,8 @@ export default function RealmPage() {
   const [backgroundValue, setBackgroundValue] = useState<string>('#ffffff');
   const [backgroundType, setBackgroundType] = useState<'color' | 'image'>('color');
   const [loading, setLoading] = useState(true);
+  const [heavyTaskWarning, setHeavyTaskWarning] = useState<Task | null>(null);
+  const { energyLevel } = useEnergyLevel();
 
   const realm = REALMS[realmId as RealmType];
 
@@ -74,8 +78,13 @@ export default function RealmPage() {
     setTasks(tasks.filter(t => t.id !== taskId));
   };
 
-  const pendingTasks = tasks.filter(t => !t.completed);
-  const completedTasks = tasks.filter(t => t.completed);
+  // Filter tasks based on energy level
+  const filteredTasks = filterTasksByEnergy(tasks, energyLevel);
+  const pendingTasks = filteredTasks.filter(t => !t.completed);
+  const completedTasks = filteredTasks.filter(t => t.completed);
+
+  // Check if there are hidden tasks due to low energy
+  const hiddenTasksCount = tasks.length - filteredTasks.length;
 
   const backgroundStyle: React.CSSProperties = {
     backgroundImage: backgroundType === 'image' ? `url(${backgroundValue})` : undefined,
@@ -101,6 +110,17 @@ export default function RealmPage() {
 
   return (
     <div className="min-h-screen" style={backgroundStyle}>
+      {/* Heavy Task Warning Modal */}
+      {heavyTaskWarning && (
+        <HeavyTaskWarning
+          onProceed={() => {
+            setSelectedTask(heavyTaskWarning);
+            setHeavyTaskWarning(null);
+          }}
+          onCancel={() => setHeavyTaskWarning(null)}
+        />
+      )}
+
       {/* Overlay oscuro si hay fondo de imagen */}
       {isImageBackground && (
         <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
@@ -129,16 +149,19 @@ export default function RealmPage() {
             </div>
           </div>
 
-          <Link
-            href={`/create?realm=${realmId}`}
-            className={cn(
-              'text-white rounded-lg p-2 transition-all shadow-sm hover:shadow-md'
-            )}
-            style={{ backgroundColor: realm.color.main }}
-            title="Nueva tarea"
-          >
-            <Plus className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            {energyLevel && <EnergyBadge level={energyLevel} />}
+            <Link
+              href={`/create?realm=${realmId}`}
+              className={cn(
+                'text-white rounded-lg p-2 transition-all shadow-sm hover:shadow-md'
+              )}
+              style={{ backgroundColor: realm.color.main }}
+              title="Nueva tarea"
+            >
+              <Plus className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -176,6 +199,21 @@ export default function RealmPage() {
             <div className="text-sm text-gray-600">Total</div>
           </div>
         </div>
+
+        {/* Energy Level Notice */}
+        {energyLevel === 'low' && hiddenTasksCount > 0 && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
+            <Lana realm="personal" size="sm" />
+            <div>
+              <p className="text-amber-800 font-medium">
+                Lana esta protegiendo {hiddenTasksCount} tarea(s) pesada(s) para ti
+              </p>
+              <p className="text-amber-700 text-sm mt-1">
+                Marcaste energia baja hoy. Las tareas academicas de alta prioridad estan ocultas para que puedas descansar.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Tasks */}
         {tasks.length === 0 ? (

@@ -9,6 +9,8 @@ import {
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
 import { useReminders } from '@/hooks/useReminders';
+import { useEnergyLevel, filterTasksByEnergy, energyMessages } from '@/hooks/useEnergyLevel';
+import { EnergyCheckIn, EnergyBadge } from '@/components/EnergyCheckIn';
 import Link from 'next/link';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -27,11 +29,24 @@ export default function Dashboard() {
     relational: {},
   });
   const [loading, setLoading] = useState(true);
+  const [showEnergyCheckIn, setShowEnergyCheckIn] = useState(false);
   const { reminderTask, onDismissReminder, onSnoozeReminder, onCompleteReminder } = useReminders();
+  const { energyLevel, hasCheckedInToday, isLoading: energyLoading, setEnergyLevel, resetCheckIn } = useEnergyLevel();
 
   useEffect(() => {
     loadData();
   }, []);
+
+  // Show energy check-in modal if user hasn't checked in today
+  useEffect(() => {
+    if (!energyLoading && !hasCheckedInToday && !loading) {
+      // Small delay to let the UI settle
+      const timer = setTimeout(() => {
+        setShowEnergyCheckIn(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [energyLoading, hasCheckedInToday, loading]);
 
   async function loadData() {
     try {
@@ -68,8 +83,24 @@ export default function Dashboard() {
   const pendingCount = tasks.filter((t) => !t.completed).length;
   const realmList = Object.values(REALMS) as typeof REALMS[keyof typeof REALMS][];
 
+  const handleEnergySelect = (level: 'low' | 'medium' | 'high') => {
+    setEnergyLevel(level);
+    setShowEnergyCheckIn(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Energy Check-in Modal */}
+      {showEnergyCheckIn && (
+        <EnergyCheckIn 
+          onSelect={handleEnergySelect}
+          onSkip={() => {
+            setEnergyLevel('medium'); // Default to medium if skipped
+            setShowEnergyCheckIn(false);
+          }}
+        />
+      )}
+
       <ReminderModal
         task={reminderTask}
         onDismiss={onDismissReminder}
@@ -90,6 +121,13 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Energy Level Badge */}
+            {energyLevel && (
+              <EnergyBadge 
+                level={energyLevel} 
+                onClick={() => setShowEnergyCheckIn(true)} 
+              />
+            )}
             <Link
               href="/weekly"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
@@ -242,9 +280,10 @@ export default function Dashboard() {
             {tasks.length > 0 && (
               <div className="mt-8 bg-card rounded-lg p-6 border border-border">
                 <Lana 
-                  realm={pendingCount > completedCount ? 'academic' : pendingCount === 0 ? 'relational' : 'personal'} 
+                  realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'} 
                   size="md" 
-                  showMessage 
+                  showMessage
+                  customMessage={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : undefined}
                 />
               </div>
             )}
