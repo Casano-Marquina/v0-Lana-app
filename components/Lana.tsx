@@ -16,17 +16,17 @@ interface LanaProps {
 
 const realmConfig = {
   personal: {
-    image: '/images/lana-green.png',
+    image: '/images/lana-verde.png',
     tone: 'amigable',
     name: 'Tu Centro',
   },
   academic: {
-    image: '/images/lana-blue.png',
+    image: '/images/lana-azul.jpg',
     tone: 'profesional',
     name: 'Tu Futuro',
   },
   relational: {
-    image: '/images/lana-pink.png',
+    image: '/images/lana-rosa.jpg',
     tone: 'empatico',
     name: 'Tu Corazon',
   },

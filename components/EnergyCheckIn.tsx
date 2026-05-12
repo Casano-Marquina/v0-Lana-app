@@ -54,8 +54,8 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-in zoom-in-95 duration-300">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-300 pb-4 md:pb-0">
+      <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden animate-in zoom-in-95 duration-300 md:max-w-md">
         {/* Skip button */}
         {onSkip && (
           <button
@@ -67,34 +67,34 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
           </button>
         )}
 
-        <div className="p-6 space-y-6">
+        <div className="p-4 md:p-6 space-y-4 md:space-y-6">
           {/* Lana greeting */}
           <div className="text-center">
             <Lana 
               realm={selectedLevel === 'high' ? 'academic' : 'personal'} 
-              size="lg" 
+              size="md" 
               className="mx-auto"
             />
             
             {!showConfirmation ? (
-              <div className="mt-4 space-y-2">
-                <h2 className="text-xl font-bold text-card-foreground">
+              <div className="mt-2 md:mt-4 space-y-1 md:space-y-2">
+                <h2 className="text-lg md:text-xl font-bold text-card-foreground">
                   Hola! Buenos dias
                 </h2>
-                <p className="text-muted-foreground">
-                  Antes de ver pendientes, Lana quiere saber...
+                <p className="text-xs md:text-sm text-muted-foreground">
+                  Lana quiere saber...
                 </p>
-                <p className="text-lg font-medium text-primary flex items-center justify-center gap-2">
-                  <Battery className="w-5 h-5" />
-                  Cuanta energia traemos hoy para tejer el dia?
+                <p className="text-sm md:text-base font-medium text-primary flex items-center justify-center gap-2">
+                  <Battery className="w-4 h-4 md:w-5 md:h-5" />
+                  Cuanta energia hoy?
                 </p>
               </div>
             ) : (
-              <div className="mt-4 space-y-2">
-                <h2 className="text-xl font-bold text-card-foreground">
+              <div className="mt-2 md:mt-4 space-y-1 md:space-y-2">
+                <h2 className="text-lg md:text-xl font-bold text-card-foreground">
                   {selectedLevel && energyMessages[selectedLevel].greeting}
                 </h2>
-                <p className="text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   {selectedLevel && energyMessages[selectedLevel].explanation}
                 </p>
               </div>
@@ -103,7 +103,7 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
 
           {/* Energy options */}
           {!showConfirmation ? (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 md:gap-3">
               {energyOptions.map((option) => {
                 const Icon = option.icon;
                 const isSelected = selectedLevel === option.level;
@@ -113,13 +113,13 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
                     key={option.level}
                     onClick={() => handleSelect(option.level)}
                     className={cn(
-                      'flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200',
+                      'flex flex-col items-center gap-1 md:gap-2 p-2 md:p-4 rounded-lg md:rounded-xl border-2 transition-all duration-200',
                       isSelected ? option.selectedColor : option.color
                     )}
                   >
-                    <Icon className="w-8 h-8" />
-                    <span className="font-semibold">{option.label}</span>
-                    <span className="text-xs opacity-80 text-center leading-tight">
+                    <Icon className="w-6 h-6 md:w-8 md:h-8" />
+                    <span className="text-sm md:text-base font-semibold">{option.label}</span>
+                    <span className="text-xs opacity-80 text-center leading-tight hidden md:block">
                       {option.description}
                     </span>
                   </button>
