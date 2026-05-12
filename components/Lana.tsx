@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 type Realm = 'personal' | 'academic' | 'relational';
 
@@ -10,24 +11,31 @@ interface LanaProps {
   showMessage?: boolean;
   customMessage?: string;
   className?: string;
+  onClick?: () => void;
 }
 
 const realmConfig = {
   personal: {
-    hatColor: '#22C55E', // Verde
+    image: '/images/lana-green.png',
     tone: 'amigable',
     name: 'Tu Centro',
   },
   academic: {
-    hatColor: '#3B82F6', // Azul
+    image: '/images/lana-blue.png',
     tone: 'profesional',
     name: 'Tu Futuro',
   },
   relational: {
-    hatColor: '#EC4899', // Rosa
+    image: '/images/lana-pink.png',
     tone: 'empatico',
     name: 'Tu Corazon',
   },
+};
+
+const sizeClasses = {
+  sm: 'w-12 h-12',
+  md: 'w-24 h-24',
+  lg: 'w-40 h-40',
 };
 
 const motivationalMessages = {
@@ -67,16 +75,11 @@ export function Lana({
   size = 'md', 
   showMessage = false,
   customMessage,
-  className = ''
+  className = '',
+  onClick,
 }: LanaProps) {
   const [message, setMessage] = useState('');
   const config = realmConfig[realm];
-  
-  const sizeClasses = {
-    sm: 'w-12 h-12',
-    md: 'w-24 h-24',
-    lg: 'w-40 h-40',
-  };
 
   useEffect(() => {
     if (showMessage && !customMessage) {
@@ -90,62 +93,19 @@ export function Lana({
 
   return (
     <div className={`flex flex-col items-center gap-3 transition-all duration-500 ${className}`}>
-      {/* Lana SVG con hover y animaciones */}
-      <div className={`relative ${sizeClasses[size]} hover:scale-105 transition-transform duration-300`}>
-        <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-sm">
-          {/* Cuerpo con animacion de "respiracion" suave */}
-          <g className="animate-[pulse_4s_infinite_ease-in-out]">
-            <ellipse cx="50" cy="65" rx="30" ry="25" fill="#F5F5DC" />
-            <circle cx="35" cy="55" r="8" fill="#FFFEF0" />
-            <circle cx="50" cy="50" r="9" fill="#FFFEF0" />
-            <circle cx="65" cy="55" r="8" fill="#FFFEF0" />
-            <circle cx="30" cy="68" r="7" fill="#FFFEF0" />
-            <circle cx="70" cy="68" r="7" fill="#FFFEF0" />
-            <circle cx="45" cy="75" r="8" fill="#FFFEF0" />
-            <circle cx="55" cy="75" r="8" fill="#FFFEF0" />
-          </g>
-          
-          {/* Cabeza */}
-          <ellipse cx="50" cy="35" rx="18" ry="16" fill="#F5F5DC" />
-          
-          {/* Orejas */}
-          <ellipse cx="30" cy="32" rx="6" ry="4" fill="#DEB887" transform="rotate(-20 30 32)" />
-          <ellipse cx="70" cy="32" rx="6" ry="4" fill="#DEB887" transform="rotate(20 70 32)" />
-          
-          {/* Cara */}
-          <ellipse cx="50" cy="38" rx="10" ry="8" fill="#FFF8DC" />
-          
-          {/* Ojos */}
-          <circle cx="44" cy="33" r="3" fill="#2D2D2D" />
-          <circle cx="56" cy="33" r="3" fill="#2D2D2D" />
-          <circle cx="45" cy="32" r="1" fill="#FFFFFF" />
-          <circle cx="57" cy="32" r="1" fill="#FFFFFF" />
-          
-          {/* Nariz */}
-          <ellipse cx="50" cy="40" rx="3" ry="2" fill="#DEB887" />
-          
-          {/* Sonrisa */}
-          <path d="M 45 44 Q 50 48 55 44" stroke="#8B7355" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          
-          {/* Mejillas rosadas */}
-          <circle cx="38" cy="38" r="3" fill="#FFB6C1" opacity="0.5" />
-          <circle cx="62" cy="38" r="3" fill="#FFB6C1" opacity="0.5" />
-          
-          {/* Gorrita con transiciones de color suaves */}
-          <g className="transition-colors duration-700 ease-in-out">
-            <path 
-              d="M 32 28 Q 35 15 50 12 Q 65 15 68 28 L 32 28 Z" 
-              fill={config.hatColor} 
-              className="transition-all duration-700"
-            />
-            <ellipse cx="50" cy="28" rx="20" ry="4" fill={config.hatColor} className="transition-all duration-700" />
-            <circle cx="50" cy="10" r="4" fill={config.hatColor} className="transition-all duration-700" />
-          </g>
-          
-          {/* Patas */}
-          <rect x="38" y="85" width="6" height="10" rx="3" fill="#8B7355" />
-          <rect x="56" y="85" width="6" height="10" rx="3" fill="#8B7355" />
-        </svg>
+      {/* Lana Real Image */}
+      <div 
+        className={`relative ${sizeClasses[size]} hover:scale-105 transition-transform duration-300 ${onClick ? 'cursor-pointer' : ''}`}
+        onClick={onClick}
+      >
+        <Image
+          src={config.image}
+          alt={`Lana - Modo ${realm}`}
+          fill
+          priority
+          quality={95}
+          className="object-contain drop-shadow-lg"
+        />
       </div>
       
       {/* Mensaje con estilo mejorado */}
