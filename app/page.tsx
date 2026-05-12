@@ -16,6 +16,8 @@ import { NavLink } from '@/components/NavLink';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
+import { LanaAdvice } from '@/components/LanaAdvice';
+import { PendingTasksSummary } from '@/components/PendingTasksSummary';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -277,15 +279,21 @@ export default function Dashboard() {
               </div>
             )}
 
-            {/* Motivational Footer with Lana */}
+            {/* Lana Advice and Pending Tasks Summary */}
             {tasks.length > 0 && (
-              <div className="mt-8 bg-card rounded-lg p-6 border border-border">
-                <Lana 
-                  realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'} 
-                  size="md" 
-                  showMessage
-                  customMessage={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : undefined}
-                />
+              <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Lana Advice - Left Side */}
+                <div className="lg:col-span-1">
+                  <LanaAdvice
+                    realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'}
+                    message={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : 'Hoy es un gran día para lograr tus metas. Vamos juntos!'}
+                  />
+                </div>
+
+                {/* Pending Tasks Summary - Right Side */}
+                <div className="lg:col-span-2">
+                  <PendingTasksSummary tasks={tasks} />
+                </div>
               </div>
             )}
           </>
