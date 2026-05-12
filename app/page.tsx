@@ -13,7 +13,7 @@ import { useEnergyLevel, filterTasksByEnergy, energyMessages } from '@/hooks/use
 import { EnergyCheckIn, EnergyBadge } from '@/components/EnergyCheckIn';
 import Link from 'next/link';
 import { NavLink } from '@/components/NavLink';
-import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
+import { Plus, Settings, Palette, Calendar, ArrowRight, Home, PiggyBank, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
 import { LanaAdvice } from '@/components/LanaAdvice';
@@ -131,6 +131,27 @@ export default function Dashboard() {
                 onClick={() => setShowEnergyCheckIn(true)} 
               />
             )}
+            <NavLink
+              href="/"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Ir al Dashboard"
+            >
+              <Home className="w-5 h-5 text-accent" />
+            </NavLink>
+            <NavLink
+              href="/expenses"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Historial de gastos"
+            >
+              <PiggyBank className="w-5 h-5 text-accent" />
+            </NavLink>
+            <NavLink
+              href="/wellness"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Bienestar con Lana"
+            >
+              <Star className="w-5 h-5 text-accent" />
+            </NavLink>
             <NavLink
               href="/weekly"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"

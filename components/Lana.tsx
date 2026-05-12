@@ -21,12 +21,12 @@ const realmConfig = {
     name: 'Tu Centro',
   },
   academic: {
-    image: '/images/lana-azul.jpg',
+    image: '/images/lana-azul.png',
     tone: 'profesional',
     name: 'Tu Futuro',
   },
   relational: {
-    image: '/images/lana-rosa.jpg',
+    image: '/images/lana-rosa.png',
     tone: 'empatico',
     name: 'Tu Corazon',
   },
