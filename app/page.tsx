@@ -3,17 +3,21 @@
 import { useEffect, useState } from 'react';
 import {
   getAllTasks,
-  getTasksByRealm,
   Task,
   getBackground,
 } from '@/lib/db';
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
 import { useReminders } from '@/hooks/useReminders';
+import { useEnergyLevel, filterTasksByEnergy, energyMessages } from '@/hooks/useEnergyLevel';
+import { EnergyCheckIn, EnergyBadge } from '@/components/EnergyCheckIn';
 import Link from 'next/link';
-import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
+import { NavLink } from '@/components/NavLink';
+import { Plus, Settings, Palette, Calendar, ArrowRight, Home, PiggyBank, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
+import { LanaAdvice } from '@/components/LanaAdvice';
+import { PendingTasksSummary } from '@/components/PendingTasksSummary';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -28,11 +32,24 @@ export default function Dashboard() {
     relational: {},
   });
   const [loading, setLoading] = useState(true);
+  const [showEnergyCheckIn, setShowEnergyCheckIn] = useState(false);
   const { reminderTask, onDismissReminder, onSnoozeReminder, onCompleteReminder } = useReminders();
+  const { energyLevel, hasCheckedInToday, isLoading: energyLoading, setEnergyLevel, resetCheckIn } = useEnergyLevel();
 
   useEffect(() => {
     loadData();
   }, []);
+
+  // Show energy check-in modal if user hasn't checked in today
+  useEffect(() => {
+    if (!energyLoading && !hasCheckedInToday && !loading) {
+      // Small delay to let the UI settle
+      const timer = setTimeout(() => {
+        setShowEnergyCheckIn(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [energyLoading, hasCheckedInToday, loading]);
 
   async function loadData() {
     try {
@@ -69,8 +86,24 @@ export default function Dashboard() {
   const pendingCount = tasks.filter((t) => !t.completed).length;
   const realmList = Object.values(REALMS) as typeof REALMS[keyof typeof REALMS][];
 
+  const handleEnergySelect = (level: 'low' | 'medium' | 'high') => {
+    setEnergyLevel(level);
+    setShowEnergyCheckIn(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      {/* Energy Check-in Modal */}
+      {showEnergyCheckIn && (
+        <EnergyCheckIn 
+          onSelect={handleEnergySelect}
+          onSkip={() => {
+            setEnergyLevel('medium'); // Default to medium if skipped
+            setShowEnergyCheckIn(false);
+          }}
+        />
+      )}
+
       <ReminderModal
         task={reminderTask}
         onDismiss={onDismissReminder}
@@ -91,27 +124,55 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link
+            {/* Energy Level Badge */}
+            {energyLevel && (
+              <EnergyBadge 
+                level={energyLevel} 
+                onClick={() => setShowEnergyCheckIn(true)} 
+              />
+            )}
+            <NavLink
+              href="/"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Ir al Dashboard"
+            >
+              <Home className="w-5 h-5 text-accent" />
+            </NavLink>
+            <NavLink
+              href="/expenses"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Historial de gastos"
+            >
+              <PiggyBank className="w-5 h-5 text-accent" />
+            </NavLink>
+            <NavLink
+              href="/wellness"
+              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              title="Bienestar con Lana"
+            >
+              <Star className="w-5 h-5 text-accent" />
+            </NavLink>
+            <NavLink
               href="/weekly"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Ver semana"
             >
               <Calendar className="w-5 h-5 text-accent" />
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               href="/backgrounds"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Personalizar fondos"
             >
               <Palette className="w-5 h-5 text-accent" />
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               href="/settings"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Configuracion"
             >
               <Settings className="w-5 h-5 text-muted-foreground" />
-            </Link>
+            </NavLink>
             <Link
               href="/create"
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
@@ -159,10 +220,10 @@ export default function Dashboard() {
                 };
 
                 return (
-                  <Link
+                  <NavLink
                     key={realm.id}
                     href={`/realm/${realm.id}`}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
+                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1 block"
                   >
                     {/* Background */}
                     <div
@@ -215,7 +276,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </NavLink>
                 );
               })}
             </div>
@@ -230,23 +291,30 @@ export default function Dashboard() {
                 <p className="text-muted-foreground mb-6">
                   Crea tu primera tarea en cualquiera de tus tres ambitos de vida
                 </p>
-                <Link
+                <NavLink
                   href="/create"
                   className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 transition-colors"
                 >
                   Crear Primera Tarea
-                </Link>
+                </NavLink>
               </div>
             )}
 
-            {/* Motivational Footer with Lana */}
+            {/* Lana Advice and Pending Tasks Summary */}
             {tasks.length > 0 && (
-              <div className="mt-8 bg-card rounded-lg p-6 border border-border">
-                <Lana 
-                  realm={pendingCount > completedCount ? 'academic' : pendingCount === 0 ? 'relational' : 'personal'} 
-                  size="md" 
-                  showMessage 
-                />
+              <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Lana Advice - Left Side */}
+                <div className="lg:col-span-1">
+                  <LanaAdvice
+                    realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'}
+                    message={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : 'Hoy es un gran día para lograr tus metas. Vamos juntos!'}
+                  />
+                </div>
+
+                {/* Pending Tasks Summary - Right Side */}
+                <div className="lg:col-span-2">
+                  <PendingTasksSummary tasks={tasks} />
+                </div>
               </div>
             )}
           </>

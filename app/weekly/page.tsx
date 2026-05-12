@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { getTasksByDateRange, Task, formatDate } from '@/lib/db';
+import { getTasksByDateRange, Task, formatDate, updateTask, deleteTask } from '@/lib/db';
 import { REALMS } from '@/lib/realms';
 import Link from 'next/link';
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
+import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 
 const HOURS = Array.from({ length: 15 }, (_, i) => i + 7); // 7:00 to 21:00
 
@@ -20,6 +21,7 @@ export default function WeeklyCalendarPage() {
   });
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState('Usuario');
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   useEffect(() => {
     loadWeeklyTasks();
@@ -92,6 +94,26 @@ export default function WeeklyCalendarPage() {
     const day = now.getDay();
     const diff = now.getDate() - day + (day === 0 ? -6 : 1);
     setWeekStart(new Date(now.setDate(diff)));
+  };
+
+  const handleToggleTask = async (task: Task) => {
+    const updated = { ...task, completed: !task.completed };
+    await updateTask(updated);
+    setTasks(tasks.map(t => (t.id === task.id ? updated : t)));
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    await deleteTask(taskId);
+    setTasks(tasks.filter(t => t.id !== taskId));
+    if (selectedTask?.id === taskId) {
+      setSelectedTask(null);
+    }
+  };
+
+  const handleUpdateTask = async (updatedTask: Task) => {
+    await updateTask(updatedTask);
+    setTasks(tasks.map(t => (t.id === updatedTask.id ? updatedTask : t)));
+    setSelectedTask(updatedTask);
   };
 
   return (
@@ -201,11 +223,11 @@ export default function WeeklyCalendarPage() {
                         )}
                       >
                         {slotTasks.map((task) => (
-                          <Link
+                          <button
                             key={task.id}
-                            href={`/edit/${task.id}`}
+                            onClick={() => setSelectedTask(task)}
                             className={cn(
-                              'block text-xs p-1 rounded border-l-2 mb-0.5 truncate hover:opacity-80 transition-opacity',
+                              'block w-full text-left text-xs p-1 rounded border-l-2 mb-0.5 truncate hover:opacity-80 transition-opacity cursor-pointer',
                               getRealmColor(task.realm)
                             )}
                             title={task.title}
@@ -214,7 +236,7 @@ export default function WeeklyCalendarPage() {
                               {task.reminderTime || '09:00'}
                             </span>
                             <span className="ml-1 opacity-80">{task.title}</span>
-                          </Link>
+                          </button>
                         ))}
                       </div>
                     );
@@ -248,6 +270,15 @@ export default function WeeklyCalendarPage() {
           </div>
         </div>
       </footer>
+
+      {/* Task Detail Panel */}
+      <TaskDetailPanel
+        task={selectedTask}
+        onClose={() => setSelectedTask(null)}
+        onUpdate={handleUpdateTask}
+        onDelete={handleDeleteTask}
+        onToggle={handleToggleTask}
+      />
     </div>
   );
 }

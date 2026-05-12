@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getPreferences, updatePreferences, UserPreferences, getDefaultPreferences } from '@/lib/db';
+import { getPreferences, updatePreferences, UserPreferences, getDefaultPreferences, getAllTasks } from '@/lib/db';
 import { requestNotificationPermission } from '@/lib/notifications';
+import { ExportReportButton } from '@/components/ExportReportButton';
+import { useEnergyLevel } from '@/hooks/useEnergyLevel';
 import Link from 'next/link';
 import { ArrowLeft, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,11 +14,23 @@ export default function SettingsPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const { energyHistory } = useEnergyLevel();
 
   useEffect(() => {
     loadPreferences();
+    loadTasks();
     checkNotificationPermission();
   }, []);
+
+  async function loadTasks() {
+    try {
+      const allTasks = await getAllTasks();
+      setTasks(allTasks);
+    } catch (error) {
+      console.error('[v0] Error loading tasks:', error);
+    }
+  }
 
   async function loadPreferences() {
     try {
@@ -253,14 +267,16 @@ export default function SettingsPage() {
 
         {/* Data Section */}
         <section className="bg-card rounded-lg shadow-md p-6 border border-border">
-          <h2 className="text-lg font-bold text-card-foreground mb-4">Datos</h2>
-          <button
-            onClick={handleExportData}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg transition-all"
-          >
-            <Download className="w-5 h-5" />
-            Exportar Datos
-          </button>
+          <h2 className="text-lg font-bold text-card-foreground mb-4">Reporte de Lana</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Genera un reporte detallado de tu bienestar y productividad con análisis inteligente de Lana.
+          </p>
+          <ExportReportButton
+            tasks={tasks}
+            energyHistory={energyHistory}
+            format="xlsx"
+            className="w-full"
+          />
         </section>
 
         {/* App Info */}
