@@ -12,6 +12,7 @@ import { useReminders } from '@/hooks/useReminders';
 import { useEnergyLevel, filterTasksByEnergy, energyMessages } from '@/hooks/useEnergyLevel';
 import { EnergyCheckIn, EnergyBadge } from '@/components/EnergyCheckIn';
 import Link from 'next/link';
+import { NavLink } from '@/components/NavLink';
 import { Plus, Settings, Palette, Calendar, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
@@ -128,27 +129,27 @@ export default function Dashboard() {
                 onClick={() => setShowEnergyCheckIn(true)} 
               />
             )}
-            <Link
+            <NavLink
               href="/weekly"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Ver semana"
             >
               <Calendar className="w-5 h-5 text-accent" />
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               href="/backgrounds"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Personalizar fondos"
             >
               <Palette className="w-5 h-5 text-accent" />
-            </Link>
-            <Link
+            </NavLink>
+            <NavLink
               href="/settings"
               className="p-2 hover:bg-secondary rounded-lg transition-colors"
               title="Configuracion"
             >
               <Settings className="w-5 h-5 text-muted-foreground" />
-            </Link>
+            </NavLink>
             <Link
               href="/create"
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
@@ -196,10 +197,10 @@ export default function Dashboard() {
                 };
 
                 return (
-                  <Link
+                  <NavLink
                     key={realm.id}
                     href={`/realm/${realm.id}`}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1"
+                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1 block"
                   >
                     {/* Background */}
                     <div
@@ -252,7 +253,7 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                  </Link>
+                  </NavLink>
                 );
               })}
             </div>
@@ -267,12 +268,12 @@ export default function Dashboard() {
                 <p className="text-muted-foreground mb-6">
                   Crea tu primera tarea en cualquiera de tus tres ambitos de vida
                 </p>
-                <Link
+                <NavLink
                   href="/create"
                   className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 transition-colors"
                 >
                   Crear Primera Tarea
-                </Link>
+                </NavLink>
               </div>
             )}
 

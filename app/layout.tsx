@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { InstallPrompt } from '@/components/InstallPrompt'
 import { ThemeProvider } from '@/components/ThemeProvider'
+import { SoftBackground } from '@/components/SoftBackground'
+import { TransitionProvider } from '@/components/TransitionProvider'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -57,9 +59,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="Mi Agenda" />
       </head>
       <body className="font-sans antialiased bg-background text-foreground">
-        <ThemeProvider />
-        {children}
-        <InstallPrompt />
+        <SoftBackground />
+        <TransitionProvider>
+          <ThemeProvider />
+          {children}
+          <InstallPrompt />
+        </TransitionProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <script
           dangerouslySetInnerHTML={{
