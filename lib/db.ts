@@ -7,6 +7,7 @@ export interface Task {
   dueDate: string; // ISO date
   dueTime?: string; // HH:MM format
   priority: 'high' | 'medium' | 'low';
+  hierarchy: 1 | 2 | 3; // 1: No postergar, 2: Pensar en postergar, 3: Postergar
   realm: 'personal' | 'academic' | 'relational';
   completed: boolean;
   createdAt: string;

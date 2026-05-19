@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { createTask, generateId, Task, formatDate, formatTime } from '@/lib/db';
 import { RealmSelector } from '@/components/RealmSelector';
 import { PrioritySelector } from '@/components/PrioritySelector';
+import { HierarchySelector } from '@/components/HierarchySelector';
 import { ReminderSetup } from '@/components/ReminderSetup';
 import { RealmType } from '@/lib/realms';
 import Link from 'next/link';
@@ -24,6 +25,7 @@ function CreateTaskContent() {
     dueDate: formatDate(new Date()),
     dueTime: formatTime(new Date()),
     priority: 'medium' as const,
+    hierarchy: 2 as 1 | 2 | 3,
     realm: initialRealm,
     reminderEnabled: false,
     reminderTime: '09:00',
@@ -52,6 +54,7 @@ function CreateTaskContent() {
         dueDate: formData.dueDate,
         dueTime: formData.dueTime,
         priority: formData.priority,
+        hierarchy: formData.hierarchy,
         realm: formData.realm,
         completed: false,
         createdAt: now,
@@ -135,6 +138,12 @@ function CreateTaskContent() {
           <PrioritySelector
             value={formData.priority}
             onChange={(priority) => setFormData({ ...formData, priority })}
+          />
+
+          {/* Hierarchy - Lana's commitment level */}
+          <HierarchySelector
+            value={formData.hierarchy}
+            onChange={(hierarchy) => setFormData({ ...formData, hierarchy })}
           />
 
           {/* Date and Time */}
