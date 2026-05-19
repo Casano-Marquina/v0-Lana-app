@@ -88,6 +88,67 @@
   animation: pulse-subtle 3s ease-in-out infinite;
 }
 
+/* ===== LANA OS DESIGN SYSTEM ===== */
+/* Glassmorphic + Claymorphism + Bento Grid */
+
+/* Glass Card - Translucent containers with blur */
+.glass-card {
+  @apply backdrop-blur-md bg-white/60 dark:bg-black/40;
+  @apply border border-white/20 dark:border-white/10;
+  @apply shadow-xl shadow-black/5;
+}
+
+/* Cozy Card - Claymorphism style with soft 3D feel */
+.cozy-card {
+  @apply bg-gradient-to-br from-white to-gray-50/80 dark:from-gray-800 dark:to-gray-900/80;
+  @apply border border-white/40 dark:border-white/10;
+  @apply shadow-[inset_0_1px_0_0_rgba(255,255,255,0.5),0_8px_30px_-5px_rgba(0,0,0,0.08)];
+  @apply dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_8px_30px_-5px_rgba(0,0,0,0.3)];
+}
+
+/* Bento Container - Grid layout for TDAH-friendly organization */
+.bento-grid {
+  @apply grid gap-4;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Bento Item - Individual compartments */
+.bento-item {
+  @apply rounded-2xl p-5 transition-all duration-300;
+  @apply hover:scale-[1.02] hover:shadow-lg;
+}
+
+/* Soft Button - Cozy tactile feel */
+.soft-button {
+  @apply bg-gradient-to-b from-white to-gray-100 dark:from-gray-700 dark:to-gray-800;
+  @apply border border-white/50 dark:border-white/10;
+  @apply shadow-[inset_0_1px_0_0_rgba(255,255,255,0.8),0_2px_4px_-1px_rgba(0,0,0,0.1)];
+  @apply dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_2px_4px_-1px_rgba(0,0,0,0.3)];
+  @apply active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] active:translate-y-px;
+  @apply transition-all duration-150;
+}
+
+/* Pastel backgrounds for realms */
+.realm-personal {
+  @apply bg-gradient-to-br from-green-100/80 to-emerald-50/60 dark:from-green-900/40 dark:to-emerald-950/30;
+}
+.realm-academic {
+  @apply bg-gradient-to-br from-blue-100/80 to-cyan-50/60 dark:from-blue-900/40 dark:to-cyan-950/30;
+}
+.realm-relational {
+  @apply bg-gradient-to-br from-pink-100/80 to-rose-50/60 dark:from-pink-900/40 dark:to-rose-950/30;
+}
+
+/* Floating animation for gentle movement */
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+.animate-float {
+  animation: float-gentle 4s ease-in-out infinite;
+}
+
 @theme inline {
   --font-sans: 'Geist', 'Geist Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';

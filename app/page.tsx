@@ -111,8 +111,8 @@ export default function Dashboard() {
         onComplete={onCompleteReminder}
       />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-card shadow-sm border-b border-border">
+      {/* Header - Glassmorphic */}
+      <header className="sticky top-0 z-50 glass-card border-b border-white/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Lana realm="personal" size="sm" />
@@ -133,49 +133,49 @@ export default function Dashboard() {
             )}
             <NavLink
               href="/"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Ir al Dashboard"
             >
               <Home className="w-5 h-5 text-accent" />
             </NavLink>
             <NavLink
               href="/expenses"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Historial de gastos"
             >
               <PiggyBank className="w-5 h-5 text-accent" />
             </NavLink>
             <NavLink
               href="/wellness"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Bienestar con Lana"
             >
               <Star className="w-5 h-5 text-accent" />
             </NavLink>
             <NavLink
               href="/weekly"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Ver semana"
             >
               <Calendar className="w-5 h-5 text-accent" />
             </NavLink>
             <NavLink
               href="/backgrounds"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Personalizar fondos"
             >
               <Palette className="w-5 h-5 text-accent" />
             </NavLink>
             <NavLink
               href="/settings"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
+              className="p-2 soft-button rounded-xl transition-colors"
               title="Configuracion"
             >
               <Settings className="w-5 h-5 text-muted-foreground" />
             </NavLink>
             <Link
               href="/create"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl p-2 transition-all shadow-lg hover:shadow-xl hover:scale-105"
               title="Nueva tarea"
             >
               <Plus className="w-5 h-5" />
@@ -191,88 +191,91 @@ export default function Dashboard() {
           </div>
         ) : (
           <>
-            {/* Global Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-primary">{pendingCount}</div>
-                <div className="text-sm text-muted-foreground">Pendientes</div>
+            {/* Bento Grid Stats - TDAH-friendly compartments */}
+            <div className="bento-grid mb-8">
+              <div className="bento-item cozy-card realm-personal">
+                <div className="text-4xl font-bold text-green-600 dark:text-green-400">{pendingCount}</div>
+                <div className="text-sm font-medium text-green-700/80 dark:text-green-300/80 mt-1">Pendientes</div>
               </div>
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-accent">{completedCount}</div>
-                <div className="text-sm text-muted-foreground">Completadas</div>
+              <div className="bento-item cozy-card realm-academic">
+                <div className="text-4xl font-bold text-blue-600 dark:text-blue-400">{completedCount}</div>
+                <div className="text-sm font-medium text-blue-700/80 dark:text-blue-300/80 mt-1">Completadas</div>
               </div>
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-secondary-foreground">{tasks.length}</div>
-                <div className="text-sm text-muted-foreground">Total</div>
+              <div className="bento-item cozy-card realm-relational">
+                <div className="text-4xl font-bold text-pink-600 dark:text-pink-400">{tasks.length}</div>
+                <div className="text-sm font-medium text-pink-700/80 dark:text-pink-300/80 mt-1">Total</div>
               </div>
             </div>
 
-            {/* Realm Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Realm Cards - Bento Style */}
+            <div className="bento-grid">
               {realmList.map((realm) => {
                 const stats = realmStats[realm.id as RealmType];
                 const bg = realmBackgrounds[realm.id as RealmType];
-                const backgroundStyle: React.CSSProperties = {
-                  backgroundImage: bg?.image ? `url(${bg.image})` : undefined,
-                  backgroundColor: !bg?.image ? (bg?.color || realm.color.light) : undefined,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                };
+                const realmClass = realm.id === 'personal' ? 'realm-personal' : realm.id === 'academic' ? 'realm-academic' : 'realm-relational';
 
                 return (
                   <NavLink
                     key={realm.id}
                     href={`/realm/${realm.id}`}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1 block"
+                    className={cn(
+                      "bento-item cozy-card group relative overflow-hidden block",
+                      realmClass,
+                      "min-h-64"
+                    )}
                   >
-                    {/* Background */}
-                    <div
-                      className="absolute inset-0"
-                      style={backgroundStyle}
-                    />
-
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/20 to-black/40" />
+                    {/* Custom background if set */}
+                    {bg?.image && (
+                      <div
+                        className="absolute inset-0 opacity-30"
+                        style={{
+                          backgroundImage: `url(${bg.image})`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                        }}
+                      />
+                    )}
 
                     {/* Content */}
-                    <div className="relative p-6 text-white min-h-64 flex flex-col justify-between">
+                    <div className="relative flex flex-col justify-between h-full">
                       {/* Header */}
                       <div>
                         <div
-                          className="w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+                          className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform shadow-lg"
                           style={{ backgroundColor: realm.color.main }}
                         >
                           <span className="text-xl">{realm.emoji}</span>
                         </div>
-                        <h3 className="text-2xl font-bold mb-1">{realm.name}</h3>
-                        <p className="text-sm opacity-90">{realm.subtitle}</p>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-1">{realm.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{realm.subtitle}</p>
                       </div>
 
                       {/* Stats */}
-                      <div className="space-y-2">
+                      <div className="space-y-2 mt-4">
                         <div className="flex justify-between items-center">
-                          <span className="text-sm opacity-90">Pendientes</span>
-                          <span className="text-xl font-bold">{stats.pending}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-300">Pendientes</span>
+                          <span className="text-xl font-bold text-gray-800 dark:text-white">{stats.pending}</span>
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-sm opacity-90">Completadas</span>
-                          <span className="text-xl font-bold">{stats.completed}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-300">Completadas</span>
+                          <span className="text-xl font-bold text-gray-800 dark:text-white">{stats.completed}</span>
                         </div>
 
-                        {/* Progress Bar */}
-                        <div className="w-full bg-white/20 rounded-full h-2 mt-4 overflow-hidden">
+                        {/* Progress Bar - Cozy style */}
+                        <div className="w-full bg-white/40 dark:bg-black/20 rounded-full h-2 mt-4 overflow-hidden shadow-inner">
                           <div
-                            className="bg-white h-full rounded-full transition-all"
+                            className="h-full rounded-full transition-all bg-gradient-to-r"
                             style={{
                               width: stats.total === 0 ? '0%' : `${(stats.completed / stats.total) * 100}%`,
+                              backgroundColor: realm.color.main,
                             }}
                           />
                         </div>
 
                         {/* CTA */}
-                        <div className="flex items-center gap-2 mt-4 pt-2 border-t border-white/20 group-hover:translate-x-1 transition-transform">
-                          <span className="text-sm font-medium">Ver ámbito</span>
-                          <ArrowRight className="w-4 h-4" />
+                        <div className="flex items-center gap-2 mt-4 pt-2 border-t border-gray-300/30 dark:border-white/10 group-hover:translate-x-1 transition-transform">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Ver ambito</span>
+                          <ArrowRight className="w-4 h-4 text-gray-700 dark:text-gray-200" />
                         </div>
                       </div>
                     </div>
@@ -281,38 +284,38 @@ export default function Dashboard() {
               })}
             </div>
 
-            {/* Empty State with Lana */}
+            {/* Empty State with Lana - Cozy Style */}
             {tasks.length === 0 && (
-              <div className="mt-12 bg-card rounded-lg p-12 text-center border border-border">
+              <div className="mt-12 bento-item cozy-card p-12 text-center">
                 <Lana realm="personal" size="lg" showMessage customMessage="Hola! Soy Lana, tu companera de productividad. Crea tu primera tarea y comencemos juntos!" />
-                <h3 className="text-lg font-semibold text-card-foreground mb-2 mt-4">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-2 mt-4">
                   Comienza a planificar
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-gray-600 dark:text-gray-300 mb-6">
                   Crea tu primera tarea en cualquiera de tus tres ambitos de vida
                 </p>
                 <NavLink
                   href="/create"
-                  className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 transition-colors"
+                  className="inline-block soft-button rounded-xl px-6 py-3 font-medium text-gray-800 dark:text-white hover:scale-105 transition-transform"
                 >
                   Crear Primera Tarea
                 </NavLink>
               </div>
             )}
 
-            {/* Lana Advice and Pending Tasks Summary */}
+            {/* Lana Advice and Pending Tasks Summary - Bento Layout */}
             {tasks.length > 0 && (
               <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Lana Advice - Left Side */}
-                <div className="lg:col-span-1">
+                <div className="lg:col-span-1 bento-item glass-card rounded-3xl">
                   <LanaAdvice
                     realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'}
-                    message={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : 'Hoy es un gran día para lograr tus metas. Vamos juntos!'}
+                    message={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : 'Hoy es un gran dia para lograr tus metas. Vamos juntos!'}
                   />
                 </div>
 
                 {/* Pending Tasks Summary - Right Side */}
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 bento-item glass-card rounded-3xl">
                   <PendingTasksSummary tasks={tasks} />
                 </div>
               </div>
