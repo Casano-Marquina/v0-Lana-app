@@ -14,7 +14,8 @@ import { REALMS, RealmType } from '@/lib/realms';
 import { TaskCard } from '@/components/TaskCard';
 import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 import { EnergyBadge, HeavyTaskWarning } from '@/components/EnergyCheckIn';
-import { useEnergyLevel, filterTasksByEnergy, isHeavyTask, energyMessages } from '@/hooks/useEnergyLevel';
+import { useEnergyLevel } from '@/hooks/useEnergyLevel';
+import { filterTasksByEnergyAndHierarchy, postponeTask, escalateTask } from '@/lib/taskHierarchy';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -78,13 +79,25 @@ export default function RealmPage() {
     setTasks(tasks.filter(t => t.id !== taskId));
   };
 
-  // Filter tasks based on energy level
-  const filteredTasks = filterTasksByEnergy(tasks, energyLevel);
+  const handlePostpone = async (task: Task) => {
+    const postponed = postponeTask(task);
+    await updateTask(postponed);
+    setTasks(tasks.map(t => t.id === task.id ? postponed : t));
+  };
+
+  const handleEscalate = async (task: Task) => {
+    const escalated = escalateTask(task);
+    await updateTask(escalated);
+    setTasks(tasks.map(t => t.id === task.id ? escalated : t));
+  };
+
+  // Filter tasks based on energy level and hierarchy
+  const { visible: filteredTasks, hidden: hiddenTasks, suggestion } = filterTasksByEnergyAndHierarchy(tasks, energyLevel);
   const pendingTasks = filteredTasks.filter(t => !t.completed);
   const completedTasks = filteredTasks.filter(t => t.completed);
 
   // Check if there are hidden tasks due to low energy
-  const hiddenTasksCount = tasks.length - filteredTasks.length;
+  const hiddenTasksCount = hiddenTasks.length;
 
   const backgroundStyle: React.CSSProperties = {
     backgroundImage: backgroundType === 'image' ? `url(${backgroundValue})` : undefined,
@@ -200,6 +213,16 @@ export default function RealmPage() {
           </div>
         </div>
 
+        {/* Energy suggestion */}
+        {suggestion && (
+          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
+            <Lana realm="academic" size="sm" />
+            <div>
+              <p className="text-blue-800 text-sm">{suggestion}</p>
+            </div>
+          </div>
+        )}
+
         {/* Energy Level Notice */}
         {energyLevel === 'low' && hiddenTasksCount > 0 && (
           <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
@@ -209,7 +232,7 @@ export default function RealmPage() {
                 Lana esta protegiendo {hiddenTasksCount} tarea(s) pesada(s) para ti
               </p>
               <p className="text-amber-700 text-sm mt-1">
-                Marcaste energia baja hoy. Las tareas academicas de alta prioridad estan ocultas para que puedas descansar.
+                Marcaste energia baja hoy. Las tareas criticas (nivel 1) estan ocultas para que puedas mantener el ritmo sin agotarte.
               </p>
             </div>
           </div>
@@ -259,6 +282,9 @@ export default function RealmPage() {
                         task={task}
                         onToggle={handleToggle}
                         onDelete={handleDelete}
+                        onEdit={(t) => setSelectedTask(t)}
+                        onPostpone={handlePostpone}
+                        onEscalate={handleEscalate}
                       />
                     </div>
                   ))}
@@ -287,6 +313,8 @@ export default function RealmPage() {
                         task={task}
                         onToggle={handleToggle}
                         onDelete={handleDelete}
+                        onEdit={(t) => setSelectedTask(t)}
+                        showHierarchyControls={false}
                       />
                     </div>
                   ))}
