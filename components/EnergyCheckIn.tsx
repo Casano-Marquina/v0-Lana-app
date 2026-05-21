@@ -54,13 +54,13 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-300 pb-4 md:pb-0">
-      <div className="relative bg-card border border-border rounded-2xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden animate-in zoom-in-95 duration-300 md:max-w-md">
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center glass-card/30 backdrop-blur-xl animate-in fade-in duration-300 pb-4 md:pb-0">
+      <div className="relative glass-card rounded-3xl shadow-2xl max-w-sm w-full mx-4 overflow-hidden animate-in zoom-in-95 duration-300 md:max-w-md">
         {/* Skip button */}
         {onSkip && (
           <button
             onClick={onSkip}
-            className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary transition-colors text-muted-foreground"
+            className="absolute top-4 right-4 p-2 rounded-full soft-button hover:scale-110 transition-all text-gray-400 dark:text-gray-500"
             title="Saltar por hoy"
           >
             <X className="w-5 h-5" />
@@ -73,28 +73,28 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
             <Lana 
               realm={selectedLevel === 'high' ? 'academic' : 'personal'} 
               size="md" 
-              className="mx-auto"
+              className="mx-auto animate-float"
             />
             
             {!showConfirmation ? (
               <div className="mt-2 md:mt-4 space-y-1 md:space-y-2">
-                <h2 className="text-lg md:text-xl font-bold text-card-foreground">
-                  Hola! Buenos dias
+                <h2 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white">
+                  ¡Hola! Buenos días
                 </h2>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
                   Lana quiere saber...
                 </p>
-                <p className="text-sm md:text-base font-medium text-primary flex items-center justify-center gap-2">
+                <p className="text-sm md:text-base font-medium text-blue-600 dark:text-blue-400 flex items-center justify-center gap-2">
                   <Battery className="w-4 h-4 md:w-5 md:h-5" />
-                  Cuanta energia hoy?
+                  ¿Cuánta energía hoy?
                 </p>
               </div>
             ) : (
               <div className="mt-2 md:mt-4 space-y-1 md:space-y-2">
-                <h2 className="text-lg md:text-xl font-bold text-card-foreground">
+                <h2 className="text-lg md:text-xl font-bold text-gray-800 dark:text-white">
                   {selectedLevel && energyMessages[selectedLevel].greeting}
                 </h2>
-                <p className="text-xs md:text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
                   {selectedLevel && energyMessages[selectedLevel].explanation}
                 </p>
               </div>
@@ -111,9 +111,10 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
                 return (
                   <button
                     key={option.level}
+                    type="button"
                     onClick={() => handleSelect(option.level)}
                     className={cn(
-                      'flex flex-col items-center gap-1 md:gap-2 p-2 md:p-4 rounded-lg md:rounded-xl border-2 transition-all duration-200',
+                      'flex flex-col items-center gap-1 md:gap-2 p-2 md:p-4 rounded-xl md:rounded-2xl soft-button transition-all duration-200 transform hover:scale-105',
                       isSelected ? option.selectedColor : option.color
                     )}
                   >
@@ -130,44 +131,46 @@ export function EnergyCheckIn({ onSelect, onSkip }: EnergyCheckInProps) {
             <div className="space-y-4">
               {/* Confirmation message based on selected level */}
               <div className={cn(
-                'p-4 rounded-xl border-2',
-                selectedLevel === 'low' && 'bg-amber-50 border-amber-200 text-amber-800',
-                selectedLevel === 'medium' && 'bg-emerald-50 border-emerald-200 text-emerald-800',
-                selectedLevel === 'high' && 'bg-blue-50 border-blue-200 text-blue-800',
+                'p-4 rounded-2xl border-2 cozy-card transition-all',
+                selectedLevel === 'low' && 'realm-personal',
+                selectedLevel === 'medium' && 'realm-relational',
+                selectedLevel === 'high' && 'realm-academic',
               )}>
                 {selectedLevel === 'low' && (
-                  <ul className="text-sm space-y-1">
-                    <li>Las tareas academicas pesadas estaran protegidas</li>
-                    <li>Priorizaremos tu autocuidado y relaciones</li>
-                    <li>Solo lo esencial para hoy</li>
+                  <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-200">
+                    <li>• Las tareas académicas pesadas estarán protegidas</li>
+                    <li>• Priorizaremos tu autocuidado y relaciones</li>
+                    <li>• Solo lo esencial para hoy</li>
                   </ul>
                 )}
                 {selectedLevel === 'medium' && (
-                  <ul className="text-sm space-y-1">
-                    <li>Equilibrio entre todos tus ambitos</li>
-                    <li>Descansos sugeridos entre tareas</li>
-                    <li>Ritmo constante y sostenible</li>
+                  <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-200">
+                    <li>• Equilibrio entre todos tus ámbitos</li>
+                    <li>• Descansos sugeridos entre tareas</li>
+                    <li>• Ritmo constante y sostenible</li>
                   </ul>
                 )}
                 {selectedLevel === 'high' && (
-                  <ul className="text-sm space-y-1">
-                    <li>Tareas de enfoque profundo primero</li>
-                    <li>Modo productividad activado</li>
-                    <li>Tareas ligeras para el final del dia</li>
+                  <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-200">
+                    <li>• Tareas de enfoque profundo primero</li>
+                    <li>• Modo productividad activado</li>
+                    <li>• Tareas ligeras para el final del día</li>
                   </ul>
                 )}
               </div>
 
               <div className="flex gap-3">
                 <button
+                  type="button"
                   onClick={() => setShowConfirmation(false)}
-                  className="flex-1 py-3 rounded-xl border-2 border-border text-muted-foreground hover:bg-secondary transition-colors"
+                  className="flex-1 py-3 rounded-xl soft-button text-gray-700 dark:text-gray-200 hover:scale-105 transition-transform"
                 >
                   Cambiar
                 </button>
                 <button
+                  type="button"
                   onClick={handleConfirm}
-                  className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                  className="flex-1 py-3 rounded-xl bg-gradient-to-r from-green-400 to-green-500 text-white font-semibold hover:shadow-lg hover:scale-105 transition-all transform"
                 >
                   Comenzar!
                 </button>
