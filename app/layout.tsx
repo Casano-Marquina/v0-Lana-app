@@ -5,6 +5,7 @@ import { InstallPrompt } from '@/components/InstallPrompt'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { SoftBackground } from '@/components/SoftBackground'
 import { TransitionProvider } from '@/components/TransitionProvider'
+import { MobileBottomNav } from '@/components/MobileBottomNav'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -58,11 +59,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Mi Agenda" />
       </head>
-      <body className="font-sans antialiased bg-background text-foreground">
+      <body className="font-sans antialiased bg-background text-foreground pb-24 md:pb-0">
         <SoftBackground />
         <TransitionProvider>
           <ThemeProvider />
           {children}
+          <MobileBottomNav />
           <InstallPrompt />
         </TransitionProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
