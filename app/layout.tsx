@@ -5,6 +5,7 @@ import { InstallPrompt } from '@/components/InstallPrompt'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { SoftBackground } from '@/components/SoftBackground'
 import { TransitionProvider } from '@/components/TransitionProvider'
+import { LayoutProvider } from '@/contexts/LayoutContext'
 import { MobileBottomNav } from '@/components/MobileBottomNav'
 import './globals.css'
 
@@ -61,12 +62,14 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased bg-background text-foreground pb-24 md:pb-0">
         <SoftBackground />
-        <TransitionProvider>
-          <ThemeProvider />
-          {children}
-          <MobileBottomNav />
-          <InstallPrompt />
-        </TransitionProvider>
+        <LayoutProvider>
+          <TransitionProvider>
+            <ThemeProvider />
+            {children}
+            <MobileBottomNav />
+            <InstallPrompt />
+          </TransitionProvider>
+        </LayoutProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <script
           dangerouslySetInnerHTML={{

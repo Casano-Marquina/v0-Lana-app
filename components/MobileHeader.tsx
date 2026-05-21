@@ -2,8 +2,9 @@
 
 import { Lana } from '@/components/Lana';
 import { EnergyBadge } from '@/components/EnergyCheckIn';
-import { Plus, Menu } from 'lucide-react';
-import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { NavLink } from '@/components/NavLink';
+import { useLayout } from '@/contexts/LayoutContext';
 import { useState } from 'react';
 
 interface MobileHeaderProps {
@@ -21,12 +22,12 @@ export function MobileHeader({
   onEnergyClick,
   showLana = true,
 }: MobileHeaderProps) {
-  const [showMenu, setShowMenu] = useState(false);
+  const { isMobileLayout } = useLayout();
 
   return (
     <header className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
       <div className="px-4 py-3 space-y-3">
-        {/* Top row: Lana + Energy + Menu */}
+        {/* Top row: Lana + Energy + Create Button */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-2 flex-1">
             {showLana && <Lana realm="personal" size="sm" />}
@@ -50,12 +51,12 @@ export function MobileHeader({
               </button>
             )}
 
-            <Link
+            <NavLink
               href="/create"
               className="p-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors shadow-lg hover:shadow-xl"
             >
               <Plus className="w-5 h-5" />
-            </Link>
+            </NavLink>
           </div>
         </div>
       </div>

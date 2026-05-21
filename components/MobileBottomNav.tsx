@@ -1,23 +1,30 @@
 'use client';
 
 import { NavLink } from '@/components/NavLink';
+import { useLayout } from '@/contexts/LayoutContext';
 import { Home, ListTodo, Wallet, Heart, Settings } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 export function MobileBottomNav() {
   const pathname = usePathname();
+  const { isMobileLayout } = useLayout();
+
+  // Don't show bottom nav in desktop layout
+  if (!isMobileLayout) {
+    return null;
+  }
 
   const navItems = [
     { href: '/', icon: Home, label: 'Home', active: pathname === '/' },
     { href: '/realm/personal', icon: Heart, label: 'Centro', active: pathname.includes('personal') },
     { href: '/realm/academic', icon: ListTodo, label: 'Futuro', active: pathname.includes('academic') },
     { href: '/realm/relational', icon: Heart, label: 'Corazón', active: pathname.includes('relational') },
-    { href: '/expenses', icon: Wallet, label: 'Ovillos', active: pathname === '/expenses' },
+    { href: '/settings', icon: Settings, label: 'Ajustes', active: pathname === '/settings' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-2xl shadow-black/10 dark:shadow-black/30">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 shadow-2xl shadow-black/10 dark:shadow-black/30 lg:hidden">
       <div className="flex items-center justify-around max-w-2xl mx-auto h-20 px-2">
         {navItems.map((item) => {
           const Icon = item.icon;
