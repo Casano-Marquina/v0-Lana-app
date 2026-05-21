@@ -200,40 +200,6 @@ export default function Dashboard() {
               })}
             </div>
 
-                      {/* Stats */}
-                      <div className="space-y-2 mt-4">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600 dark:text-gray-300">Pendientes</span>
-                          <span className="text-xl font-bold text-gray-800 dark:text-white">{stats.pending}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-gray-600 dark:text-gray-300">Completadas</span>
-                          <span className="text-xl font-bold text-gray-800 dark:text-white">{stats.completed}</span>
-                        </div>
-
-                        {/* Progress Bar - Cozy style */}
-                        <div className="w-full bg-white/40 dark:bg-black/20 rounded-full h-2 mt-4 overflow-hidden shadow-inner">
-                          <div
-                            className="h-full rounded-full transition-all bg-gradient-to-r"
-                            style={{
-                              width: stats.total === 0 ? '0%' : `${(stats.completed / stats.total) * 100}%`,
-                              backgroundColor: realm.color.main,
-                            }}
-                          />
-                        </div>
-
-                        {/* CTA */}
-                        <div className="flex items-center gap-2 mt-4 pt-2 border-t border-gray-300/30 dark:border-white/10 group-hover:translate-x-1 transition-transform">
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-200">Ver ambito</span>
-                          <ArrowRight className="w-4 h-4 text-gray-700 dark:text-gray-200" />
-                        </div>
-                      </div>
-                    </div>
-                  </NavLink>
-                );
-              })}
-            </div>
-
             {/* Empty State with Lana - Compact Mobile */}
             {tasks.length === 0 && (
               <div className="mt-8 cozy-card rounded-2xl p-8 text-center space-y-4">
