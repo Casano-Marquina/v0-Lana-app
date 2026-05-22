@@ -237,9 +237,6 @@ export default function RealmPage() {
                 <div className="space-y-1 opacity-60">
                   {completedTasks.map(task => (
                     <div key={task.id} className="rounded-lg overflow-hidden">
-                        isImageBackground && 'backdrop-blur-sm'
-                      )}
-                    >
                       <TaskCard
                         task={task}
                         onToggle={handleToggle}
