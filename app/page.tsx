@@ -9,9 +9,12 @@ import {
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
 import { useReminders } from '@/hooks/useReminders';
+import { useEnergyLevel, energyMessages } from '@/hooks/useEnergyLevel';
+import { EnergyCheckIn } from '@/components/EnergyCheckIn';
+import { MobileHeader } from '@/components/MobileHeader';
 import { useLayout } from '@/contexts/LayoutContext';
-import { TaskCard } from '@/components/TaskCard';
-import { TaskDetailPanel } from '@/components/TaskDetailPanel';
+import { NavLink } from '@/components/NavLink';
+import { Plus, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
 
