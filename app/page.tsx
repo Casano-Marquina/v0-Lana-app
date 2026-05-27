@@ -9,15 +9,14 @@ import {
 import { REALMS, RealmType } from '@/lib/realms';
 import { ReminderModal } from '@/components/ReminderModal';
 import { useReminders } from '@/hooks/useReminders';
-import { useEnergyLevel, filterTasksByEnergy, energyMessages } from '@/hooks/useEnergyLevel';
-import { EnergyCheckIn, EnergyBadge } from '@/components/EnergyCheckIn';
-import Link from 'next/link';
+import { useEnergyLevel, energyMessages } from '@/hooks/useEnergyLevel';
+import { EnergyCheckIn } from '@/components/EnergyCheckIn';
+import { MobileHeader } from '@/components/MobileHeader';
+import { useLayout } from '@/contexts/LayoutContext';
 import { NavLink } from '@/components/NavLink';
-import { Plus, Settings, Palette, Calendar, ArrowRight, Home, PiggyBank, Star } from 'lucide-react';
+import { Plus, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
-import { LanaAdvice } from '@/components/LanaAdvice';
-import { PendingTasksSummary } from '@/components/PendingTasksSummary';
 
 export default function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -85,6 +84,8 @@ export default function Dashboard() {
   const completedCount = tasks.filter((t) => t.completed).length;
   const pendingCount = tasks.filter((t) => !t.completed).length;
   const realmList = Object.values(REALMS) as typeof REALMS[keyof typeof REALMS][];
+  const { isMobileLayout } = useLayout();
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   const handleEnergySelect = (level: 'low' | 'medium' | 'high') => {
     setEnergyLevel(level);
@@ -111,209 +112,160 @@ export default function Dashboard() {
         onComplete={onCompleteReminder}
       />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-card shadow-sm border-b border-border">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Lana realm="personal" size="sm" />
-            <div>
-              <h1 className="text-2xl font-bold text-primary">
-                Mi Agenda
-              </h1>
-              <p className="text-xs text-muted-foreground">Tus prioridades de vida</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Energy Level Badge */}
-            {energyLevel && (
-              <EnergyBadge 
-                level={energyLevel} 
-                onClick={() => setShowEnergyCheckIn(true)} 
-              />
-            )}
-            <NavLink
-              href="/"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Ir al Dashboard"
-            >
-              <Home className="w-5 h-5 text-accent" />
-            </NavLink>
-            <NavLink
-              href="/expenses"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Historial de gastos"
-            >
-              <PiggyBank className="w-5 h-5 text-accent" />
-            </NavLink>
-            <NavLink
-              href="/wellness"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Bienestar con Lana"
-            >
-              <Star className="w-5 h-5 text-accent" />
-            </NavLink>
-            <NavLink
-              href="/weekly"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Ver semana"
-            >
-              <Calendar className="w-5 h-5 text-accent" />
-            </NavLink>
-            <NavLink
-              href="/backgrounds"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Personalizar fondos"
-            >
-              <Palette className="w-5 h-5 text-accent" />
-            </NavLink>
-            <NavLink
-              href="/settings"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Configuracion"
-            >
-              <Settings className="w-5 h-5 text-muted-foreground" />
-            </NavLink>
-            <Link
-              href="/create"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg p-2 transition-all shadow-sm hover:shadow-md"
-              title="Nueva tarea"
-            >
-              <Plus className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Header - Mobile optimized */}
+      <MobileHeader
+        title="Mi Agenda"
+        subtitle="Tus prioridades de vida"
+        energyLevel={energyLevel}
+        onEnergyClick={() => setShowEnergyCheckIn(true)}
+        showLana={true}
+      />
 
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      <main className={cn(
+        'space-y-4',
+        isMobileLayout 
+          ? 'max-w-2xl mx-auto px-3 py-4 pb-24'
+          : 'max-w-6xl mx-auto px-6 py-8'
+      )}>
         {loading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
           </div>
         ) : (
           <>
-            {/* Global Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-primary">{pendingCount}</div>
-                <div className="text-sm text-muted-foreground">Pendientes</div>
+            {/* Quick Stats - Responsive */}
+            <div className={cn(
+              'gap-3',
+              isMobileLayout ? 'grid grid-cols-3 gap-2' : 'grid grid-cols-3 gap-4'
+            )}>
+              <div className={cn(
+                'cozy-card rounded-2xl text-center realm-personal',
+                isMobileLayout ? 'p-4' : 'p-6'
+              )}>
+                <div className={cn('font-bold text-green-600 dark:text-green-400', isMobileLayout ? 'text-3xl' : 'text-4xl')}>
+                  {pendingCount}
+                </div>
+                <div className={cn('font-semibold text-green-700/80 dark:text-green-300/80 mt-1', isMobileLayout ? 'text-xs' : 'text-sm')}>
+                  Pendientes
+                </div>
               </div>
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-accent">{completedCount}</div>
-                <div className="text-sm text-muted-foreground">Completadas</div>
+              <div className={cn(
+                'cozy-card rounded-2xl text-center realm-academic',
+                isMobileLayout ? 'p-4' : 'p-6'
+              )}>
+                <div className={cn('font-bold text-blue-600 dark:text-blue-400', isMobileLayout ? 'text-3xl' : 'text-4xl')}>
+                  {completedCount}
+                </div>
+                <div className={cn('font-semibold text-blue-700/80 dark:text-blue-300/80 mt-1', isMobileLayout ? 'text-xs' : 'text-sm')}>
+                  Completadas
+                </div>
               </div>
-              <div className="bg-card rounded-lg p-6 shadow-sm border border-border">
-                <div className="text-3xl font-bold text-secondary-foreground">{tasks.length}</div>
-                <div className="text-sm text-muted-foreground">Total</div>
+              <div className={cn(
+                'cozy-card rounded-2xl text-center realm-relational',
+                isMobileLayout ? 'p-4' : 'p-6'
+              )}>
+                <div className={cn('font-bold text-pink-600 dark:text-pink-400', isMobileLayout ? 'text-3xl' : 'text-4xl')}>
+                  {tasks.length}
+                </div>
+                <div className={cn('font-semibold text-pink-700/80 dark:text-pink-300/80 mt-1', isMobileLayout ? 'text-xs' : 'text-sm')}>
+                  Total
+                </div>
               </div>
             </div>
 
-            {/* Realm Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Realm Cards - Desktop Grid or Mobile Stack */}
+            <div className={cn(
+              isMobileLayout 
+                ? 'space-y-3'
+                : 'grid grid-cols-1 lg:grid-cols-3 gap-4'
+            )}>
               {realmList.map((realm) => {
                 const stats = realmStats[realm.id as RealmType];
-                const bg = realmBackgrounds[realm.id as RealmType];
-                const backgroundStyle: React.CSSProperties = {
-                  backgroundImage: bg?.image ? `url(${bg.image})` : undefined,
-                  backgroundColor: !bg?.image ? (bg?.color || realm.color.light) : undefined,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                };
+                const realmClass = realm.id === 'personal' ? 'realm-personal' : realm.id === 'academic' ? 'realm-academic' : 'realm-relational';
 
                 return (
                   <NavLink
                     key={realm.id}
                     href={`/realm/${realm.id}`}
-                    className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-lg transition-all hover:-translate-y-1 block"
+                    className={cn(
+                      'block cozy-card rounded-2xl transition-all active:scale-95 hover:scale-105 duration-200',
+                      isMobileLayout ? 'p-5' : 'p-6 min-h-64 flex flex-col',
+                      realmClass
+                    )}
                   >
-                    {/* Background */}
-                    <div
-                      className="absolute inset-0"
-                      style={backgroundStyle}
-                    />
-
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/0 via-black/20 to-black/40" />
-
-                    {/* Content */}
-                    <div className="relative p-6 text-white min-h-64 flex flex-col justify-between">
-                      {/* Header */}
-                      <div>
+                    {/* Realm Header */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3 flex-1">
                         <div
-                          className="w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform"
+                          className={cn(
+                            'rounded-xl flex items-center justify-center flex-shrink-0',
+                            isMobileLayout ? 'w-10 h-10' : 'w-12 h-12'
+                          )}
                           style={{ backgroundColor: realm.color.main }}
                         >
-                          <span className="text-xl">{realm.emoji}</span>
+                          <span className={isMobileLayout ? 'text-lg' : 'text-2xl'}>{realm.emoji}</span>
                         </div>
-                        <h3 className="text-2xl font-bold mb-1">{realm.name}</h3>
-                        <p className="text-sm opacity-90">{realm.subtitle}</p>
+                        <div className="min-w-0">
+                          <h3 className={cn(
+                            'font-bold text-gray-800 dark:text-white line-clamp-1',
+                            isMobileLayout ? 'text-base' : 'text-lg'
+                          )}>
+                            {realm.name}
+                          </h3>
+                          <p className={cn(
+                            'text-gray-500 dark:text-gray-400',
+                            isMobileLayout ? 'text-xs' : 'text-sm'
+                          )}>
+                            {realm.subtitle}
+                          </p>
+                        </div>
                       </div>
+                      {!isMobileLayout && <ArrowRight className="w-5 h-5 text-gray-400 dark:text-gray-600 flex-shrink-0 ml-2" />}
+                    </div>
 
-                      {/* Stats */}
-                      <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm opacity-90">Pendientes</span>
-                          <span className="text-xl font-bold">{stats.pending}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm opacity-90">Completadas</span>
-                          <span className="text-xl font-bold">{stats.completed}</span>
-                        </div>
-
-                        {/* Progress Bar */}
-                        <div className="w-full bg-white/20 rounded-full h-2 mt-4 overflow-hidden">
-                          <div
-                            className="bg-white h-full rounded-full transition-all"
-                            style={{
-                              width: stats.total === 0 ? '0%' : `${(stats.completed / stats.total) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        {/* CTA */}
-                        <div className="flex items-center gap-2 mt-4 pt-2 border-t border-white/20 group-hover:translate-x-1 transition-transform">
-                          <span className="text-sm font-medium">Ver ámbito</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </div>
+                    {/* Stats Row */}
+                    <div className={cn(
+                      'flex items-center justify-between gap-2',
+                      isMobileLayout ? 'text-sm' : 'text-base'
+                    )}>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600 dark:text-gray-300">Pendientes:</span>
+                        <span className="font-bold text-gray-900 dark:text-white">{stats.pending}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="text-gray-600 dark:text-gray-300">Completadas:</span>
+                        <span className="font-bold text-gray-900 dark:text-white">{stats.completed}</span>
                       </div>
                     </div>
+
+                    {/* Progress Bar */}
+                    <div className="w-full bg-white/40 dark:bg-black/20 rounded-full h-1.5 mt-3 overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all"
+                        style={{
+                          width: stats.total === 0 ? '0%' : `${(stats.completed / stats.total) * 100}%`,
+                          backgroundColor: realm.color.main,
+                        }}
+                      />
+                    </div>
+
+                    {!isMobileLayout && <div className="flex-1" />}
                   </NavLink>
                 );
               })}
             </div>
 
-            {/* Empty State with Lana */}
+            {/* Empty State with Lana - Compact Mobile */}
             {tasks.length === 0 && (
-              <div className="mt-12 bg-card rounded-lg p-12 text-center border border-border">
-                <Lana realm="personal" size="lg" showMessage customMessage="Hola! Soy Lana, tu companera de productividad. Crea tu primera tarea y comencemos juntos!" />
-                <h3 className="text-lg font-semibold text-card-foreground mb-2 mt-4">
-                  Comienza a planificar
-                </h3>
-                <p className="text-muted-foreground mb-6">
-                  Crea tu primera tarea en cualquiera de tus tres ambitos de vida
-                </p>
-                <NavLink
-                  href="/create"
-                  className="inline-block bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 transition-colors"
-                >
-                  Crear Primera Tarea
-                </NavLink>
-              </div>
-            )}
-
-            {/* Lana Advice and Pending Tasks Summary */}
-            {tasks.length > 0 && (
-              <div className="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Lana Advice - Left Side */}
-                <div className="lg:col-span-1">
-                  <LanaAdvice
-                    realm={energyLevel === 'high' ? 'academic' : energyLevel === 'low' ? 'personal' : 'personal'}
-                    message={energyLevel ? energyMessages[energyLevel].greeting + ' ' + energyMessages[energyLevel].explanation : 'Hoy es un gran día para lograr tus metas. Vamos juntos!'}
-                  />
-                </div>
-
-                {/* Pending Tasks Summary - Right Side */}
-                <div className="lg:col-span-2">
-                  <PendingTasksSummary tasks={tasks} />
+              <div className="mt-8 cozy-card rounded-2xl p-8 text-center space-y-4">
+                <Lana realm="personal" size="md" showMessage customMessage="¡Crea tu primera tarea aquí arriba!" />
+                <div>
+                  <h3 className="text-base font-semibold text-gray-800 dark:text-white mb-1">
+                    Comienza ahora
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    Organiza tu vida en 3 ámbitos
+                  </p>
                 </div>
               </div>
             )}

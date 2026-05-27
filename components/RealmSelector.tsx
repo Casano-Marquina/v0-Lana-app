@@ -17,6 +17,7 @@ export function RealmSelector({ value, onChange, disabled = false }: RealmSelect
         {Object.values(REALMS).map((realm) => (
           <button
             key={realm.id}
+            type="button"
             onClick={() => !disabled && onChange(realm.id)}
             disabled={disabled}
             className={cn(

@@ -5,10 +5,11 @@ import { getPreferences, updatePreferences, UserPreferences, getDefaultPreferenc
 import { requestNotificationPermission } from '@/lib/notifications';
 import { ExportReportButton } from '@/components/ExportReportButton';
 import { useEnergyLevel } from '@/hooks/useEnergyLevel';
-import Link from 'next/link';
-import { ArrowLeft, Download } from 'lucide-react';
+import { useLayout } from '@/contexts/LayoutContext';
+import { ArrowLeft, Download, Monitor, Smartphone, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
+import { NavLink } from '@/components/NavLink';
 
 export default function SettingsPage() {
   const [prefs, setPrefs] = useState<UserPreferences | null>(null);
@@ -16,6 +17,7 @@ export default function SettingsPage() {
   const [hasNotificationPermission, setHasNotificationPermission] = useState(false);
   const [tasks, setTasks] = useState([]);
   const { energyHistory } = useEnergyLevel();
+  const { layoutMode, setLayoutMode, isMobileLayout } = useLayout();
 
   useEffect(() => {
     loadPreferences();
@@ -139,20 +141,86 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-card shadow-sm border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
-          <Link
+        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
+          <NavLink
             href="/"
             className="p-2 hover:bg-secondary rounded-lg transition-colors"
             title="Volver"
           >
             <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-          </Link>
+          </NavLink>
           <Lana realm="personal" size="sm" />
-          <h1 className="text-2xl font-bold text-card-foreground">Configuracion</h1>
+          <h1 className="text-2xl font-bold text-card-foreground">Ajustes</h1>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+      <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+        {/* Layout Preference Section - NEW */}
+        <section className="bg-card rounded-lg shadow-md p-6 border border-border">
+          <h2 className="text-lg font-bold text-card-foreground mb-2">Preferencia de Diseño</h2>
+          <p className="text-sm text-muted-foreground mb-4">Elige cómo prefieres ver tu agenda</p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Auto Mode */}
+            <button
+              onClick={() => setLayoutMode('auto')}
+              className={cn(
+                'p-4 rounded-lg border-2 flex flex-col items-start transition-all text-left',
+                layoutMode === 'auto'
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border bg-secondary hover:border-primary/50'
+              )}
+            >
+              <Zap className={cn(
+                'w-6 h-6 mb-2',
+                layoutMode === 'auto' ? 'text-primary' : 'text-gray-400'
+              )} />
+              <h3 className="font-semibold text-card-foreground">Automático</h3>
+              <p className="text-xs text-muted-foreground mt-1">Mobile en celular, Desktop en pantalla grande</p>
+            </button>
+
+            {/* Mobile Mode */}
+            <button
+              onClick={() => setLayoutMode('mobile')}
+              className={cn(
+                'p-4 rounded-lg border-2 flex flex-col items-start transition-all text-left',
+                layoutMode === 'mobile'
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border bg-secondary hover:border-primary/50'
+              )}
+            >
+              <Smartphone className={cn(
+                'w-6 h-6 mb-2',
+                layoutMode === 'mobile' ? 'text-primary' : 'text-gray-400'
+              )} />
+              <h3 className="font-semibold text-card-foreground">Siempre Mobile</h3>
+              <p className="text-xs text-muted-foreground mt-1">Optimizado para celular en cualquier pantalla</p>
+            </button>
+
+            {/* Desktop Mode */}
+            <button
+              onClick={() => setLayoutMode('desktop')}
+              className={cn(
+                'p-4 rounded-lg border-2 flex flex-col items-start transition-all text-left',
+                layoutMode === 'desktop'
+                  ? 'border-primary bg-primary/10'
+                  : 'border-border bg-secondary hover:border-primary/50'
+              )}
+            >
+              <Monitor className={cn(
+                'w-6 h-6 mb-2',
+                layoutMode === 'desktop' ? 'text-primary' : 'text-gray-400'
+              )} />
+              <h3 className="font-semibold text-card-foreground">Siempre Desktop</h3>
+              <p className="text-xs text-muted-foreground mt-1">Diseño completo con más densidad</p>
+            </button>
+          </div>
+
+          <div className="mt-4 p-3 bg-secondary rounded-lg text-xs text-muted-foreground">
+            <strong>Estado actual:</strong> {isMobileLayout ? 'Diseño Mobile' : 'Diseño Desktop'}
+          </div>
+        </section>
+
         {/* Notifications Section */}
         <section className="bg-card rounded-lg shadow-md p-6 border border-border">
           <h2 className="text-lg font-bold text-card-foreground mb-4">Notificaciones</h2>
@@ -280,7 +348,7 @@ export default function SettingsPage() {
         </section>
 
         {/* App Info */}
-        <section className="bg-card rounded-lg shadow-md p-6 text-center border border-border">
+        <section className="bg-card rounded-lg shadow-md p-6 text-center border border-border mb-8">
           <Lana realm="personal" size="lg" showMessage customMessage="Me encanta ayudarte a organizar tu vida. Cualquier duda, aqui estoy!" />
           <h3 className="text-lg font-bold text-card-foreground mb-1 mt-4">Mi Agenda v1.0.0</h3>
           <p className="text-xs text-muted-foreground">

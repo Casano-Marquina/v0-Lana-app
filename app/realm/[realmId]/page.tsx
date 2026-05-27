@@ -16,8 +16,8 @@ import { TaskDetailPanel } from '@/components/TaskDetailPanel';
 import { EnergyBadge, HeavyTaskWarning } from '@/components/EnergyCheckIn';
 import { useEnergyLevel } from '@/hooks/useEnergyLevel';
 import { filterTasksByEnergyAndHierarchy, postponeTask, escalateTask } from '@/lib/taskHierarchy';
-import Link from 'next/link';
-import { ArrowLeft, Plus } from 'lucide-react';
+import { MobileHeader } from '@/components/MobileHeader';
+import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Lana } from '@/components/Lana';
 
@@ -139,100 +139,56 @@ export default function RealmPage() {
         <div className="absolute inset-0 bg-black/30 pointer-events-none"></div>
       )}
 
-      {/* Header */}
-      <div className={cn(
-        'sticky top-0 z-40',
-        isImageBackground ? 'bg-card/90 backdrop-blur-sm' : 'bg-card'
-      )}>
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              className="p-2 hover:bg-secondary rounded-lg transition-colors"
-              title="Volver"
-            >
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </Link>
-            <Lana realm={realmId as RealmType} size="sm" />
-            <div>
-              <h1 className="text-2xl font-bold" style={{ color: realm.color.main }}>
-                {realm.name}
-              </h1>
-              <p className="text-sm text-muted-foreground">{realm.description}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {energyLevel && <EnergyBadge level={energyLevel} />}
-            <Link
-              href={`/create?realm=${realmId}`}
-              className={cn(
-                'text-white rounded-lg p-2 transition-all shadow-sm hover:shadow-md'
-              )}
-              style={{ backgroundColor: realm.color.main }}
-              title="Nueva tarea"
-            >
-              <Plus className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </div>
+      {/* Header - Mobile optimized */}
+      <MobileHeader
+        title={realm.name}
+        subtitle={realm.subtitle}
+        energyLevel={energyLevel}
+        showLana={true}
+      />
 
       {/* Content */}
-      <div className={cn(
-        'relative z-10 max-w-4xl mx-auto px-4 py-8'
-      )}>
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className={cn(
-            'p-4 rounded-lg backdrop-blur-sm',
-            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
-          )}>
+      <div className="relative z-10 max-w-2xl mx-auto px-3 py-4 space-y-3 pb-24">
+        {/* Quick Stats - Compact */}
+        <div className="grid grid-cols-3 gap-2">
+          <div className="cozy-card rounded-xl p-3 text-center">
             <div className="text-2xl font-bold" style={{ color: realm.color.main }}>
               {pendingTasks.length}
             </div>
-            <div className="text-sm text-gray-600">Pendientes</div>
+            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">Pendientes</div>
           </div>
-          <div className={cn(
-            'p-4 rounded-lg backdrop-blur-sm',
-            isImageBackground ? 'bg-white/80' : 'bg-green-50'
-          )}>
-            <div className="text-2xl font-bold text-green-600">
+          <div className="cozy-card rounded-xl p-3 text-center">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               {completedTasks.length}
             </div>
-            <div className="text-sm text-gray-600">Completadas</div>
+            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">Completadas</div>
           </div>
-          <div className={cn(
-            'p-4 rounded-lg backdrop-blur-sm',
-            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
-          )}>
-            <div className="text-2xl font-bold text-gray-600">
+          <div className="cozy-card rounded-xl p-3 text-center">
+            <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">
               {tasks.length}
             </div>
-            <div className="text-sm text-gray-600">Total</div>
+            <div className="text-xs font-semibold text-gray-600 dark:text-gray-400">Total</div>
           </div>
         </div>
 
-        {/* Energy suggestion */}
+        {/* Energy suggestion - Compact */}
         {suggestion && (
-          <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-            <Lana realm="academic" size="sm" />
-            <div>
-              <p className="text-blue-800 text-sm">{suggestion}</p>
-            </div>
+          <div className="cozy-card rounded-xl p-3 flex items-start gap-2 bg-blue-100/50 dark:bg-blue-900/30 border border-blue-200/50 dark:border-blue-800/50">
+            <Lana realm="academic" size="sm" className="flex-shrink-0" />
+            <p className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">{suggestion}</p>
           </div>
         )}
 
         {/* Energy Level Notice */}
         {energyLevel === 'low' && hiddenTasksCount > 0 && (
-          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-            <Lana realm="personal" size="sm" />
+          <div className="cozy-card rounded-xl p-3 flex items-start gap-2 bg-amber-100/50 dark:bg-amber-900/30 border border-amber-200/50 dark:border-amber-800/50">
+            <Lana realm="personal" size="sm" className="flex-shrink-0" />
             <div>
-              <p className="text-amber-800 font-medium">
-                Lana esta protegiendo {hiddenTasksCount} tarea(s) pesada(s) para ti
+              <p className="text-xs font-medium text-amber-800 dark:text-amber-300">
+                Lana protege {hiddenTasksCount} tarea(s) pesada(s)
               </p>
-              <p className="text-amber-700 text-sm mt-1">
-                Marcaste energia baja hoy. Las tareas criticas (nivel 1) estan ocultas para que puedas mantener el ritmo sin agotarte.
+              <p className="text-xs text-amber-700 dark:text-amber-300/80 mt-0.5">
+                Energía baja hoy - solo lo esencial
               </p>
             </div>
           </div>
@@ -240,44 +196,25 @@ export default function RealmPage() {
 
         {/* Tasks */}
         {tasks.length === 0 ? (
-          <div className={cn(
-            'text-center py-12 rounded-lg',
-            isImageBackground ? 'bg-white/80' : 'bg-gray-50'
-          )}>
-            <div className="text-4xl mb-2">🎉</div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          <div className="text-center cozy-card rounded-2xl p-8">
+            <div className="text-3xl mb-2">🎉</div>
+            <h3 className="font-semibold text-gray-700 dark:text-gray-200 mb-1">
               ¡Sin tareas!
             </h3>
-            <p className="text-gray-600 mb-6">
-              Todas las tareas de este ámbito están completadas
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              Todas completadas - ¡muy bien!
             </p>
-            <Link
-              href={`/create?realm=${realmId}`}
-              className="inline-block px-6 py-2 text-white rounded-lg transition-all"
-              style={{ backgroundColor: realm.color.main }}
-            >
-              Crear Nueva Tarea
-            </Link>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {pendingTasks.length > 0 && (
               <div>
-                <h3 className={cn(
-                  'text-lg font-semibold mb-3 px-2',
-                  isImageBackground ? 'text-white' : 'text-gray-900'
-                )}>
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 px-2">
                   Pendientes ({pendingTasks.length})
                 </h3>
                 <div className="space-y-2">
                   {pendingTasks.map(task => (
-                    <div
-                      key={task.id}
-                      className={cn(
-                        'rounded-lg overflow-hidden',
-                        isImageBackground && 'backdrop-blur-sm'
-                      )}
-                    >
+                    <div key={task.id} className="rounded-lg overflow-hidden">
                       <TaskCard
                         task={task}
                         onToggle={handleToggle}
@@ -293,22 +230,13 @@ export default function RealmPage() {
             )}
 
             {completedTasks.length > 0 && (
-              <div className="mt-8">
-                <h3 className={cn(
-                  'text-lg font-semibold mb-3 px-2 opacity-60',
-                  isImageBackground ? 'text-white' : 'text-gray-900'
-                )}>
+              <div className="mt-4">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 px-2 opacity-60">
                   Completadas ({completedTasks.length})
                 </h3>
-                <div className="space-y-2 opacity-60">
+                <div className="space-y-1 opacity-60">
                   {completedTasks.map(task => (
-                    <div
-                      key={task.id}
-                      className={cn(
-                        'rounded-lg overflow-hidden',
-                        isImageBackground && 'backdrop-blur-sm'
-                      )}
-                    >
+                    <div key={task.id} className="rounded-lg overflow-hidden">
                       <TaskCard
                         task={task}
                         onToggle={handleToggle}

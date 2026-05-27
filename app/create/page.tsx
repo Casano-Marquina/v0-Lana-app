@@ -94,62 +94,78 @@ function CreateTaskContent() {
 
       <main className="max-w-2xl mx-auto px-4 py-8">
 
-        <form onSubmit={handleSubmit} className="bg-card rounded-lg shadow-md p-6 space-y-6 border border-border">
+        <form onSubmit={handleSubmit} className="glass-card rounded-3xl shadow-xl p-8 space-y-6 border border-white/20">
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block text-sm font-semibold text-card-foreground mb-2">
-              Titulo *
+            <label htmlFor="title" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+              ¿Qué necesitas hacer?
             </label>
             <input
               type="text"
               id="title"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              placeholder="Que necesitas hacer?"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Escribe tu tarea..."
+              className="w-full px-4 py-3 soft-button rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-800 dark:text-white focus:border-transparent transition-all"
               disabled={loading}
+              required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-2">
-              Descripción (opcional)
+            <label htmlFor="description" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
+              Más detalles (opcional)
             </label>
             <textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Agrega detalles adicionales..."
+              placeholder="Agrega contexto..."
               rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className="w-full px-4 py-3 soft-button rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-800 dark:text-white focus:border-transparent transition-all resize-none"
               disabled={loading}
             />
           </div>
 
           {/* Realm Selector */}
-          <RealmSelector
-            value={formData.realm}
-            onChange={(realm) => setFormData({ ...formData, realm })}
-            disabled={loading}
-          />
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+              ¿A qué área de tu vida pertenece?
+            </label>
+            <RealmSelector
+              value={formData.realm}
+              onChange={(realm) => setFormData({ ...formData, realm })}
+              disabled={loading}
+            />
+          </div>
 
           {/* Priority */}
-          <PrioritySelector
-            value={formData.priority}
-            onChange={(priority) => setFormData({ ...formData, priority })}
-          />
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+              Prioridad
+            </label>
+            <PrioritySelector
+              value={formData.priority}
+              onChange={(priority) => setFormData({ ...formData, priority })}
+            />
+          </div>
 
           {/* Hierarchy - Lana's commitment level */}
-          <HierarchySelector
-            value={formData.hierarchy}
-            onChange={(hierarchy) => setFormData({ ...formData, hierarchy })}
-          />
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-3">
+              Nivel de compromiso
+            </label>
+            <HierarchySelector
+              value={formData.hierarchy}
+              onChange={(hierarchy) => setFormData({ ...formData, hierarchy })}
+            />
+          </div>
 
           {/* Date and Time */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="dueDate" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="dueDate" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Fecha
               </label>
               <input
@@ -157,12 +173,12 @@ function CreateTaskContent() {
                 id="dueDate"
                 value={formData.dueDate}
                 onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 soft-button rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-800 dark:text-white focus:border-transparent transition-all"
                 disabled={loading}
               />
             </div>
             <div>
-              <label htmlFor="dueTime" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label htmlFor="dueTime" className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">
                 Hora
               </label>
               <input
@@ -170,7 +186,7 @@ function CreateTaskContent() {
                 id="dueTime"
                 value={formData.dueTime}
                 onChange={(e) => setFormData({ ...formData, dueTime: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-3 soft-button rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:bg-gray-800 dark:text-white focus:border-transparent transition-all"
                 disabled={loading}
               />
             </div>
@@ -184,14 +200,14 @@ function CreateTaskContent() {
             onTimeChange={(time) => setFormData({ ...formData, reminderTime: time })}
           />
 
-          {/* Submit Button */}
+          {/* Submit Button - Gradient cozy */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-blue-400 to-blue-500 hover:shadow-xl disabled:opacity-50 text-white font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 hover:scale-105 transform duration-200"
           >
             <Plus className="w-5 h-5" />
-            {loading ? 'Creando...' : 'Crear Tarea'}
+            {loading ? 'Creando...' : '+ Crear Tarea'}
           </button>
         </form>
       </main>

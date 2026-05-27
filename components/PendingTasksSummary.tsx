@@ -21,76 +21,67 @@ export function PendingTasksSummary({ tasks, className = '' }: PendingTasksSumma
   }, {} as Record<string, Task[]>);
 
   return (
-    <div className={cn('bg-card border border-border rounded-2xl p-6 shadow-md', className)}>
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-2xl font-bold text-card-foreground mb-1">
-            {pendingTasks.length} pendiente{pendingTasks.length !== 1 ? 's' : ''}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Distribuido en tus ámbitos de vida
+    <div className={cn('space-y-6', className)}>
+      <div>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-1">
+          {pendingTasks.length} pendiente{pendingTasks.length !== 1 ? 's' : ''}
+        </h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Distribuido en tus ambitos de vida
+        </p>
+      </div>
+
+      {pendingTasks.length === 0 ? (
+        <div className="text-center py-8 cozy-card rounded-2xl">
+          <CheckCircle2 className="w-12 h-12 mx-auto mb-3 text-green-500 opacity-70" />
+          <p className="text-gray-600 dark:text-gray-300">
+            No hay tareas pendientes. Excelente!
           </p>
         </div>
+      ) : (
+        <div className="space-y-3">
+          {Object.entries(REALMS).map(([realmId, realm]) => {
+            const realmTasks = tasksByRealm[realmId] || [];
+            if (realmTasks.length === 0) return null;
+            const realmClass = realmId === 'personal' ? 'realm-personal' : realmId === 'academic' ? 'realm-academic' : 'realm-relational';
 
-        {pendingTasks.length === 0 ? (
-          <div className="text-center py-8">
-            <Circle className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-            <p className="text-muted-foreground">
-              No hay tareas pendientes. Excelente!
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {Object.entries(REALMS).map(([realmId, realm]) => {
-              const realmTasks = tasksByRealm[realmId] || [];
-              if (realmTasks.length === 0) return null;
-
-              return (
-                <div key={realmId} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: realm.color.main }}
-                      />
-                      <span className="font-medium text-foreground">
-                        {realm.name}
-                      </span>
-                    </div>
-                    <span className="text-sm font-semibold text-foreground">
-                      {realmTasks.length}
+            return (
+              <div key={realmId} className={cn('cozy-card rounded-xl p-4 space-y-2', realmClass)}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="w-4 h-4 rounded-lg shadow-sm"
+                      style={{ backgroundColor: realm.color.main }}
+                    />
+                    <span className="font-semibold text-gray-800 dark:text-white">
+                      {realm.name}
                     </span>
                   </div>
-                  <div className="space-y-1 pl-5">
-                    {realmTasks.slice(0, 3).map((task) => (
-                      <div
-                        key={task.id}
-                        className="text-sm text-muted-foreground flex items-start gap-2 truncate hover:text-foreground transition-colors"
-                      >
-                        <Circle className="w-3 h-3 mt-1 flex-shrink-0" />
-                        <span className="truncate">{task.title}</span>
-                      </div>
-                    ))}
-                    {realmTasks.length > 3 && (
-                      <p className="text-xs text-accent pl-5 font-medium">
-                        +{realmTasks.length - 3} más
-                      </p>
-                    )}
-                  </div>
+                  <span className="text-lg font-bold text-gray-800 dark:text-white">
+                    {realmTasks.length}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {pendingTasks.length > 0 && (
-          <div className="pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground text-center">
-              Haz clic en cualquier ámbito para ver más detalles
-            </p>
-          </div>
-        )}
-      </div>
+                <div className="space-y-1 pl-6">
+                  {realmTasks.slice(0, 3).map((task) => (
+                    <div
+                      key={task.id}
+                      className="text-sm text-gray-600 dark:text-gray-300 flex items-start gap-2 truncate"
+                    >
+                      <Circle className="w-2 h-2 mt-1.5 flex-shrink-0" />
+                      <span className="truncate">{task.title}</span>
+                    </div>
+                  ))}
+                  {realmTasks.length > 3 && (
+                    <p className="text-xs font-medium pl-4" style={{ color: realm.color.main }}>
+                      +{realmTasks.length - 3} mas
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

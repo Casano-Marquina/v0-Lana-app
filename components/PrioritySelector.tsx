@@ -38,6 +38,7 @@ export function PrioritySelector({ value, onChange }: PrioritySelectorProps) {
         {priorities.map((priority) => (
           <button
             key={priority.value}
+            type="button"
             onClick={() => onChange(priority.value)}
             className={cn(
               'flex-1 py-2 px-3 rounded-lg border-2 transition-all font-medium text-sm flex items-center justify-center gap-2',
